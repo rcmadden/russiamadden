@@ -223,6 +223,76 @@ body:after {
   animation-fill-mode: forwards;
 }
 
+/* Naive forced nav style for project page */
+
+.contact_nav > li {
+  list-style: none;
+}
+.contact_nav > li > a {
+  text-decoration: none;
+  display: inline-block;
+  outline: none;
+  color: white;
+  font-size: 3vmin;
+  line-height: 10vmin;
+  padding-left: 5vmin;
+  padding-right: 2.5vmin;
+  cursor: pointer;
+  transition: padding 300ms;
+}
+.contact_nav > li > a:hover, .contact > li > a:focus {
+  padding-right: 4vmin;
+  padding-left: 7vmin;
+}
+.contact_nav > li:first-child > a {
+  /* background: #27ae60; */
+  background: #9b59b6;
+  border-radius: 1vmin 0 0;
+}
+/* .contact > li:nth-child(2) > a {
+  background: #f1c40f;
+} */
+/* .contact > li:nth-child(3) > a {
+  background: #3498db;
+} */
+/* .contact > li:nth-child(4) > a {
+  background: #9b59b6;
+  border-radius: 0 0 0 1vmin;
+} */
+
+/* .card__content {
+  height: 100%;
+  width: 100%;
+} 
+.card__content:before, .card__content:after {
+  content: '';
+  height: 100%;
+  box-sizing: content-box;
+  position: absolute;
+  left: 0;
+  width: 2.5vmin;
+  height: 10vmin;
+} */
+.card__content_nav:before {
+  background: #9b59b6;
+  top: 0;
+  border-radius: 1vmin 0 0 0;
+  border-bottom: 12vmin none;
+}
+.card__content_nav:after {
+  background: none;
+  bottom: 0;
+  border-radius: 0 0 0 1vmin;
+  border-top: 10vmin none;
+}
+
+.projects {
+  position: absolute; 
+  font-size: 2em;
+  color: white;
+  z-index: 1;
+}
+
 @keyframes fadeInOut {
   0% {
     top: 0;
