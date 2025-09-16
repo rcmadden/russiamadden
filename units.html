@@ -22,9 +22,9 @@
     margin:0; padding:0;
   }
   header {
-    display:flex; align-items:center; justify-content:center; gap:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
     padding:12px 16px; background:#fff; border-bottom:1px solid #e5e5e5;
-    position:sticky; top:0; z-index:10;
+    position:sticky; top:0; z-index:1050; flex-wrap:wrap;
   }
   h1 { margin:0; font-size:22px; font-weight:800; }
   .controls { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
@@ -57,16 +57,11 @@
 </style>
 </head>
 <body>
-  <nav class="navbar fixed-top navbar-light bg-light" style="padding: .5rem 1rem;">       
-        <span class="navbar-brand mb-0 h1">Russia Madden > Projects <a href="projects.html" class="text-link">> Back</a></span>
-    </nav>
-</nav>
-  <div>
-  <h1>Units</h1>
-  </div>
 <header>
-
+  <span class="navbar-brand mb-0 h1">Russia Madden > Projects <a href="projects.html" class="text-link">> Back</a></span>
+  <h1>Red Track/Blue Track Chart Maker</h1>
   <div class="controls">
+    
     <!-- Keep key list explicit for readability & reordering -->
     <div class="dropdown">
       <select id="scale-select" aria-label="Select Major Key">
@@ -108,7 +103,6 @@
     <button id="toggle-start"    class="btn">Start on Unit 1</button>
   </div>
 </header>
-
 <!--
   NOTE: "Unit 1 / Unit 2" texts live OUTSIDE the key groups so we can freely
   reposition them and hide Octave 2 labels in single-octave mode without touching the keys.
