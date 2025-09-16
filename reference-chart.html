@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Units Reference Chart</title>
+<script defer data-domain="tacatto.com" src="https://plausible.io/js/script.js"></script>
+<style>
+  /* =============================
+     Basic Page & Controls Styles
+     ============================= */
+  :root { --pad:10px; }
+  body {
+    background:#f5f5f5;
+    text-align:center;
+    font-family:system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    margin:0; padding:0;
+  }
+  header {
+    display:flex; align-items:center; justify-content:center; gap:12px;
+    padding:12px 16px; background:#fff; border-bottom:1px solid #e5e5e5;
+    position:sticky; top:0; z-index:10;
+  }
+  h1 { margin:0; font-size:22px; font-weight:800; }
+  .controls { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+  .btn, .dropdown select{
+    font-size:16px; padding:10px 12px; border-radius:10px;
+    border:1px solid #cfcfcf; background:#fff; cursor:pointer;
+  }
+  .btn:hover, .dropdown select:focus { box-shadow: 0 0 0 2px rgba(30,144,255,.25); outline:none; }
+  .dropdown { position:relative; display:inline-block; }
+  .dropdown::after {
+    content:"▼"; position:absolute; right:10px; top:50%; transform:translateY(-50%);
+    pointer-events:none; font-size:12px; color:#666;
+  }
+  .dropdown select { padding-right:28px; }
+
+  /* =============================
+     Chart Layout Styles
+     ============================= */
+  .chart-container {
+    padding: 20px;
+    background: white;
+    margin: 0 auto;
+  }
+
+  .chart-grid {
+    display: grid;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .chart-grid.two-column {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .chart-grid.one-column {
+    grid-template-columns: 1fr;
+  }
+
+  .key-chart {
+    border: 2px solid #e5e5e5;
+    border-radius: 12px;
+    padding: 16px;
+    background: white;
+    break-inside: avoid;
+  }
+
+  .key-title {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 16px;
+    color: #0f172a;
+  }
+
+  /* =============================
+     SVG Styling
+     ============================= */
+  svg { margin: 0 auto; display: block; }
+  text.octave-label { font-size:20px; font-weight:800; fill:#0f172a; text-anchor:middle; }
+  text.unit-label   { font-size:14px; font-weight:700; fill:#0f172a; text-anchor:middle; }
+  .dot { stroke:#111; stroke-width:3; }
+  .dot[data-track="red"]  { fill:#ff69b4; }
+  .dot[data-track="blue"] { fill:#1e90ff; }
+  .note-label { font-size:14px; fill:#111; text-anchor:middle; user-select:none; }
+
+  /* =============================
+     Print Styles
+     ============================= */
+  @media print {
+    body { background: white; }
+    header { display: none !important; }
+    .chart-container { padding: 10px; }
+    .chart-grid { gap: 20px; }
+    .key-chart {
+      border: 1px solid #333;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    .chart-grid.one-column .key-chart:nth-child(6n+1) {
+      page-break-before: always;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .chart-grid.two-column {
+      grid-template-columns: 1fr;
+    }
+    svg { width: 96vw; height:auto; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Units Reference Chart</h1>
+  <div class="controls">
+    <div class="dropdown">
+      <select id="layout-mode" aria-label="Layout Mode">
+        <option value="two-column">Layout: 2-Column (1 octave, 1 page)</option>
+        <option value="one-column">Layout: 1-Column (2 octaves, 2 pages)</option>
+      </select>
+    </div>
+
+    <div class="dropdown">
+      <select id="label-mode" aria-label="Label Mode">
+        <option value="letters">Labels: Note Names</option>
+        <option value="degrees">Labels: Scale Degrees</option>
+      </select>
+    </div>
+
+    <div class="dropdown">
+      <select id="unit-label-pos" aria-label="Unit labels position">
+        <option value="below" selected>Unit Labels: Below</option>
+        <option value="above">Unit Labels: Above</option>
+        <option value="hidden">Unit Labels: Hidden</option>
+      </select>
+    </div>
+
+    <button id="toggle-labels" class="btn">Show Note Labels</button>
+    <button id="toggle-start" class="btn">Start on Unit 1</button>
+  </div>
+</header>
+
+<div class="chart-container">
+  <div id="chart-grid" class="chart-grid two-column">
+    <!-- Charts will be generated here -->
+  </div>
+</div>
+
+<script>
+  /* =============================================================================
+     Geometry: Scaled down for reference chart
+     ============================================================================= */
+  const GEOM = {
+    groupY: 40,
+    whiteW: 50,
+    whiteH: 180,
+    blackH: 110,
+    unit1W: 3*50,
+    unit2W: 4*50,
+    dotRadius: 12,
+
+    unitLabelAboveOffset: -4,
+    unitLabelBelowOffset: 32,
+    noteLabelBelowOffset: 18,
+    noteLabelWithUnitBelowOffset: 10
+  };
+
+  const Y = {
+    keyTop:    GEOM.groupY,
+    keyBottom: GEOM.groupY + GEOM.whiteH,
+    unitAbove: GEOM.groupY + GEOM.unitLabelAboveOffset,
+    unitBelow: GEOM.groupY + GEOM.whiteH + GEOM.unitLabelBelowOffset,
+    labelBelowDefault: GEOM.groupY + GEOM.whiteH + GEOM.noteLabelBelowOffset,
+    labelBelowWhenUnitsBelow: GEOM.groupY + GEOM.whiteH + GEOM.noteLabelWithUnitBelowOffset
+  };
+
+  /* =============================================================================
+     Same helper functions from units.html
+     ============================================================================= */
+  const SHARP_TO_FLAT = {
+    "C#":"Db","D#":"Eb","F#":"Gb","G#":"Ab","A#":"Bb","E#":"F","B#":"C"
+  };
+  const toFlat = n => SHARP_TO_FLAT[n] || n;
+  const normalize = toFlat;
+  const prefersSharps = key => ["G","D","A","E","B","F#","C#"].includes(key);
+  function displayName(norm, preferSharpsFlag){
+    if (!preferSharpsFlag) return norm;
+    const FLAT_TO_SHARP = {"Db":"C#","Eb":"D#","Gb":"F#","Ab":"G#","Bb":"A#"};
+    return FLAT_TO_SHARP[norm] || norm;
+  }
+
+  const MAJOR = {
+    "C":  ["C","D","E","F","G","A","B","C"],
+    "G":  ["G","A","B","C","D","E","F#","G"],
+    "D":  ["D","E","F#","G","A","B","C#","D"],
+    "A":  ["A","B","C#","D","E","F#","G#","A"],
+    "E":  ["E","F#","G#","A","B","C#","D#","E"],
+    "B":  ["B","C#","D#","E","F#","G#","A#","B"],
+    "F#": ["F#","G#","A#","B","C#","D#","E#","F#"],
+    "Gb": ["Gb","Ab","Bb","Cb","Db","Eb","F","Gb"],
+    "Db": ["Db","Eb","F","Gb","Ab","Bb","C","Db"],
+    "Ab": ["Ab","Bb","C","Db","Eb","F","G","Ab"],
+    "Eb": ["Eb","F","G","Ab","Bb","C","D","Eb"],
+    "Bb": ["Bb","C","D","Eb","F","G","A","Bb"],
+    "F":  ["F","G","A","Bb","C","D","E","F"]
+  };
+
+  // Key order for the chart
+  const KEY_ORDER = ["C", "G", "D", "A", "E", "B", "Gb", "Db", "Ab", "Eb", "Bb", "F"];
+
+  // UI state
+  let showingTwo = false; // Start with single octave for reference chart
+  let startOnUnit1 = true;
+  let showingLabels = false;
+  let unitLabelPos = "below";
+  let layoutMode = "two-column";
+
+  /* =============================
+     SVG Generation Functions
+     ============================= */
+  function generateKeyboardSVG(keyName, octaves = 1) {
+    const totalWidth = octaves === 1 ? 350 : 700;
+    const viewBoxHeight = 280;
+
+    let svg = `<svg viewBox="0 0 ${totalWidth} ${viewBoxHeight}" xmlns="http://www.w3.org/2000/svg" aria-label="${keyName} major keyboard">`;
+
+    // Generate octaves
+    for (let oct = 1; oct <= octaves; oct++) {
+      const octaveOffset = (oct - 1) * 350;
+
+      // Octave title
+      if (octaves > 1) {
+        svg += `<text class="octave-label" x="${170 + octaveOffset}" y="30">Octave ${oct}</text>`;
+      }
+
+      // Unit labels
+      const unitY = unitLabelPos === "above" ? Y.unitAbove : Y.unitBelow;
+      const unitDisplay = unitLabelPos === "hidden" ? "none" : "inline";
+
+      const unit1Label = startOnUnit1 ? "Unit 1" : "Unit 2";
+      const unit2Label = startOnUnit1 ? "Unit 2" : "Unit 1";
+
+      svg += `<text class="unit-label" x="${75 + octaveOffset}" y="${unitY}" style="display:${unitDisplay}">${unit1Label}</text>`;
+      svg += `<text class="unit-label" x="${250 + octaveOffset}" y="${unitY}" style="display:${unitDisplay}">${unit2Label}</text>`;
+
+      // Generate units
+      svg += generateUnit(oct, 1, octaveOffset);
+      svg += generateUnit(oct, 2, octaveOffset);
+    }
+
+    svg += '</svg>';
+    return svg;
+  }
+
+  function generateUnit(octave, unit, octaveOffset) {
+    const isUnit1 = unit === 1;
+    const unitOffset = startOnUnit1
+      ? (isUnit1 ? 0 : GEOM.unit1W)
+      : (isUnit1 ? GEOM.unit2W : 0);
+
+    const keys = isUnit1 ? ["C", "D", "E"] : ["F", "G", "A", "B"];
+    const blackKeys = isUnit1 ? ["Db", "Eb"] : ["Gb", "Ab", "Bb"];
+
+    let unitSvg = `<g transform="translate(${octaveOffset + unitOffset},${GEOM.groupY})">`;
+
+    // White keys
+    keys.forEach((key, i) => {
+      unitSvg += `<rect x="${i * GEOM.whiteW}" y="0" width="${GEOM.whiteW}" height="${GEOM.whiteH}" fill="white" stroke="black" stroke-width="2"/>`;
+    });
+
+    // Black keys
+    if (isUnit1) {
+      unitSvg += `<rect x="${GEOM.whiteW - 25}" y="0" width="30" height="${GEOM.blackH}" fill="black"/>`;
+      unitSvg += `<rect x="${2 * GEOM.whiteW - 25}" y="0" width="30" height="${GEOM.blackH}" fill="black"/>`;
+    } else {
+      unitSvg += `<rect x="${GEOM.whiteW - 25}" y="0" width="30" height="${GEOM.blackH}" fill="black"/>`;
+      unitSvg += `<rect x="${2 * GEOM.whiteW - 25}" y="0" width="30" height="${GEOM.blackH}" fill="black"/>`;
+      unitSvg += `<rect x="${3 * GEOM.whiteW - 25}" y="0" width="30" height="${GEOM.blackH}" fill="black"/>`;
+    }
+
+    // Dots for white keys
+    keys.forEach((key, i) => {
+      const track = (isUnit1 && !startOnUnit1) || (!isUnit1 && startOnUnit1) ? "blue" : "red";
+      unitSvg += `<circle class="dot" cx="${i * GEOM.whiteW + GEOM.whiteW/2}" cy="${GEOM.whiteH - 30}" r="${GEOM.dotRadius}" data-key="${key}" data-track="${track}"/>`;
+    });
+
+    // Dots for black keys
+    if (isUnit1) {
+      const track = startOnUnit1 ? "blue" : "red";
+      unitSvg += `<circle class="dot" cx="${GEOM.whiteW - 25 + 15}" cy="${GEOM.blackH - 20}" r="${GEOM.dotRadius}" data-key="Db" data-track="${track}"/>`;
+      unitSvg += `<circle class="dot" cx="${2 * GEOM.whiteW - 25 + 15}" cy="${GEOM.blackH - 20}" r="${GEOM.dotRadius}" data-key="Eb" data-track="${track}"/>`;
+    } else {
+      const track = startOnUnit1 ? "red" : "blue";
+      unitSvg += `<circle class="dot" cx="${GEOM.whiteW - 25 + 15}" cy="${GEOM.blackH - 20}" r="${GEOM.dotRadius}" data-key="Gb" data-track="${track}"/>`;
+      unitSvg += `<circle class="dot" cx="${2 * GEOM.whiteW - 25 + 15}" cy="${GEOM.blackH - 20}" r="${GEOM.dotRadius}" data-key="Ab" data-track="${track}"/>`;
+      unitSvg += `<circle class="dot" cx="${3 * GEOM.whiteW - 25 + 15}" cy="${GEOM.blackH - 20}" r="${GEOM.dotRadius}" data-key="Bb" data-track="${track}"/>`;
+    }
+
+    unitSvg += '</g>';
+    return unitSvg;
+  }
+
+  /* =============================
+     Chart Generation
+     ============================= */
+  function generateChart() {
+    const container = document.getElementById('chart-grid');
+    container.innerHTML = '';
+    container.className = `chart-grid ${layoutMode}`;
+
+    const octaves = layoutMode === "one-column" ? 2 : 1;
+
+    KEY_ORDER.forEach(key => {
+      const chartDiv = document.createElement('div');
+      chartDiv.className = 'key-chart';
+      chartDiv.innerHTML = `
+        <div class="key-title">${key} Major</div>
+        ${generateKeyboardSVG(key, octaves)}
+      `;
+      container.appendChild(chartDiv);
+
+      // Apply scale and show dots
+      applyScaleToChart(chartDiv, key);
+      if (showingLabels) {
+        showLabelsForChart(chartDiv, key);
+      }
+    });
+  }
+
+  function applyScaleToChart(chartDiv, key) {
+    const notes = MAJOR[key] || [];
+    const dots = chartDiv.querySelectorAll('.dot');
+
+    dots.forEach(dot => {
+      const dotKey = dot.getAttribute('data-key');
+      const isInScale = notes.some(note => normalize(note) === normalize(dotKey));
+      dot.style.opacity = isInScale ? '1' : '0';
+    });
+  }
+
+  function showLabelsForChart(chartDiv, key) {
+    const svg = chartDiv.querySelector('svg');
+    const notes = MAJOR[key] || [];
+    const mode = document.getElementById("label-mode").value;
+    const preferSharpsFlag = prefersSharps(key);
+
+    // Remove existing labels
+    const existingLabels = svg.querySelectorAll('.note-label');
+    existingLabels.forEach(label => label.remove());
+
+    // Scale degree names
+    const degNames = {};
+    notes.forEach((n, i) => {
+      degNames[normalize(n)] = (i === notes.length - 1) ? "1" : String(i + 1);
+    });
+
+    const baseline = (unitLabelPos === "below")
+      ? Y.labelBelowWhenUnitsBelow
+      : Y.labelBelowDefault;
+
+    const octaves = layoutMode === "one-column" ? 2 : 1;
+
+    for (let oct = 1; oct <= octaves; oct++) {
+      notes.forEach(nRaw => {
+        const n = normalize(nRaw);
+        const text = (mode === "letters") ? displayName(n, preferSharpsFlag) : degNames[n];
+        if (!text) return;
+
+        const x = getXForNote(n, oct);
+        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        label.setAttribute("x", x);
+        label.setAttribute("y", baseline);
+        label.setAttribute("class", "note-label");
+        label.textContent = text;
+        svg.appendChild(label);
+      });
+    }
+  }
+
+  function getXForNote(note, octave) {
+    const octaveOffset = (octave - 1) * 350;
+    const isUnit1Note = ["C", "D", "E", "Db", "Eb"].includes(note);
+
+    const unitOffset = startOnUnit1
+      ? (isUnit1Note ? 0 : GEOM.unit1W)
+      : (isUnit1Note ? GEOM.unit2W : 0);
+
+    const localPositions = {
+      "C": 25, "D": 75, "E": 125, "Db": 40, "Eb": 90,
+      "F": 25, "G": 75, "A": 125, "B": 175, "Gb": 40, "Ab": 90, "Bb": 140
+    };
+
+    return octaveOffset + unitOffset + (localPositions[note] || 0);
+  }
+
+  /* =============================
+     Event Handlers
+     ============================= */
+  document.getElementById("layout-mode").addEventListener("change", (e) => {
+    layoutMode = e.target.value;
+    showingTwo = layoutMode === "one-column";
+    generateChart();
+  });
+
+  document.getElementById("toggle-start").addEventListener("click", () => {
+    startOnUnit1 = !startOnUnit1;
+    document.getElementById("toggle-start").textContent =
+      startOnUnit1 ? "Start on Unit 1" : "Start on Unit 2";
+    generateChart();
+  });
+
+  document.getElementById("unit-label-pos").addEventListener("change", (e) => {
+    unitLabelPos = e.target.value;
+    generateChart();
+  });
+
+  document.getElementById("toggle-labels").addEventListener("click", () => {
+    showingLabels = !showingLabels;
+    const btn = document.getElementById("toggle-labels");
+    btn.textContent = showingLabels ? "Hide Note Labels" : "Show Note Labels";
+    generateChart();
+  });
+
+  document.getElementById("label-mode").addEventListener("change", () => {
+    if (showingLabels) {
+      generateChart();
+    }
+  });
+
+  // Initial generation
+  generateChart();
+</script>
+</body>
+</html>
