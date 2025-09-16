@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Units</title>
+<script defer data-domain="tacatto.com" src="https://plausible.io/js/script.js"></script>
+<style>
+  /* =============================
+     Basic Page & Controls Styles
+     ============================= */
+  :root { --pad:10px; }
+  body {
+    background:#f5f5f5;
+    text-align:center;
+    font-family:system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    margin:0; padding:0;
+  }
+  header {
+    display:flex; align-items:center; justify-content:center; gap:12px;
+    padding:12px 16px; background:#fff; border-bottom:1px solid #e5e5e5;
+    position:sticky; top:0; z-index:10;
+  }
+  h1 { margin:0; font-size:22px; font-weight:800; }
+  .controls { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+  .btn, .dropdown select{
+    font-size:16px; padding:10px 12px; border-radius:10px;
+    border:1px solid #cfcfcf; background:#fff; cursor:pointer;
+  }
+  .btn:hover, .dropdown select:focus { box-shadow: 0 0 0 2px rgba(30,144,255,.25); outline:none; }
+  .dropdown { position:relative; display:inline-block; }
+  .dropdown::after {
+    content:"▼"; position:absolute; right:10px; top:50%; transform:translateY(-50%);
+    pointer-events:none; font-size:12px; color:#666;
+  }
+  .dropdown select { padding-right:28px; }
+
+  /* =============================
+     SVG Styling
+     ============================= */
+  svg { margin-top:12px; }
+  text.octave-label { font-size:28px; font-weight:800; fill:#0f172a; text-anchor:middle; }
+  text.unit-label   { font-size:18px; font-weight:700; fill:#0f172a; text-anchor:middle; }
+  .dot { stroke:#111; stroke-width:4; cursor:pointer; }
+  .dot[data-track="red"]  { fill:#ff69b4; }
+  .dot[data-track="blue"] { fill:#1e90ff; }
+  .hidden { opacity:0; }
+  .note-label { font-size:18px; fill:#111; text-anchor:middle; user-select:none; }
+
+  @media (max-width: 768px){ svg { width: 96vw; height:auto; } }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Units</h1>
+  <div class="controls">
+    <!-- Keep key list explicit for readability & reordering -->
+    <div class="dropdown">
+      <select id="scale-select" aria-label="Select Major Key">
+        <option value="">Free mode (no key selected)</option>
+        <option>C</option>
+        <option>G</option>
+        <option>D</option>
+        <option>A</option>
+        <option>E</option>
+        <option>B</option>
+        <option>F#</option>
+        <option>Gb</option>
+        <option>Db</option>
+        <option>Ab</option>
+        <option>Eb</option>
+        <option>Bb</option>
+        <option>F</option>
+      </select>
+    </div>
+
+    <div class="dropdown">
+      <select id="label-mode" aria-label="Label Mode">
+        <option value="letters">Labels: Note Names</option>
+        <option value="degrees">Labels: Scale Degrees</option>
+      </select>
+    </div>
+
+    <div class="dropdown">
+      <!-- Position of "Unit 1 / Unit 2" text -->
+      <select id="unit-label-pos" aria-label="Unit labels position">
+        <option value="below" selected>Unit Labels: Below</option>
+        <option value="above">Unit Labels: Above</option>
+        <option value="hidden">Unit Labels: Hidden</option>
+      </select>
+    </div>
+
+    <button id="toggle-labels"   class="btn">Show Note Labels</button>
+    <button id="toggle-octaves"  class="btn">Show Two Octaves</button>
+    <button id="toggle-start"    class="btn">Start on Unit 1</button>
+  </div>
+</header>
+
+<!--
+  NOTE: "Unit 1 / Unit 2" texts live OUTSIDE the key groups so we can freely
+  reposition them and hide Octave 2 labels in single-octave mode without touching the keys.
+-->
+<svg id="keyboard" viewBox="0 0 1160 450" xmlns="http://www.w3.org/2000/svg" aria-label="Units keyboard">
+
+  <!-- ===== OCTAVE 1 ===== -->
+  <text id="oct1-title" class="octave-label" x="280" y="44">Octave 1</text>
+
+  <!-- Unit labels for Octave 1 -->
+  <text id="oct1-left-label"  class="unit-label" x="120" y="412">Unit 1</text>
+  <text id="oct1-right-label" class="unit-label" x="400" y="412">Unit 2</text>
+
+  <!-- Keys (translateY = 60; white height = 300 => bottom = 360) -->
+  <g id="oct1" data-octave="1" transform="translate(0,60)">
+
+    <!-- Unit 1: C-D-E -->
+    <g id="oct1-u1" data-unit="1" transform="translate(0,0)">
+      <!-- White keys -->
+      <rect x="0" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"/>
+      <rect x="80" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"/>
+      <rect x="160" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"/>
+      <!-- Black keys -->
+      <rect x="55" y="0" width="50" height="180" fill="black"/>
+      <rect x="135" y="0" width="50" height="180" fill="black"/>
+      <!-- Dots (tracks) -->
+      <circle class="dot white-dot" cx="40"  cy="270" r="18" data-key="C"  data-track="red"/>
+      <circle class="dot white-dot" cx="120" cy="270" r="18" data-key="D"  data-track="red"/>
+      <circle class="dot white-dot" cx="200" cy="270" r="18" data-key="E"  data-track="red"/>
+      <circle class="dot black-dot" cx="80"  cy="150" r="18" data-key="Db" data-track="blue"/>
+      <circle class="dot black-dot" cx="160" cy="150" r="18" data-key="Eb" data-track="blue"/>
+    </g>
+
+    <!-- Unit 2: F-G-A-B -->
+    <g id="oct1-u2" data-unit="2" transform="translate(240,0)">
+      <!-- White keys -->
+      <rect x="0"   y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"/>
+      <rect x="80"  y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"/>
+      <rect x="160" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"/>
+      <rect x="240" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"/>
+      <!-- Black keys -->
+      <rect x="55" y="0" width="50" height="180" fill="black"/>
+      <rect x="135" y="0" width="50" height="180" fill="black"/>
+      <rect x="215" y="0" width="50" height="180" fill="black"/>
+      <!-- Dots (tracks) -->
+      <circle class="dot white-dot" cx="40"  cy="270" r="18" data-key="F"  data-track="blue"/>
+      <circle class="dot white-dot" cx="120" cy="270" r="18" data-key="G"  data-track="blue"/>
+      <circle class="dot white-dot" cx="200" cy="270" r="18" data-key="A"  data-track="blue"/>
+      <circle class="dot white-dot" cx="280" cy="270" r="18" data-key="B"  data-track="blue"/>
+      <circle class="dot black-dot" cx="80"  cy="150" r="18" data-key="Gb" data-track="red"/>
+      <circle class="dot black-dot" cx="160" cy="150" r="18" data-key="Ab" data-track="red"/>
+      <circle class="dot black-dot" cx="240" cy="150" r="18" data-key="Bb" data-track="red"/>
+    </g>
+  </g>
+
+  <!-- ===== OCTAVE 2 ===== -->
+  <text id="oct2-title" class="octave-label" x="840" y="44">Octave 2</text>
+  <text id="oct2-left-label"  class="unit-label" x="680" y="412">Unit 1</text>
+  <text id="oct2-right-label" class="unit-label" x="960" y="412">Unit 2</text>
+
+  <g id="oct2" data-octave="2" transform="translate(560,60)">
+    <!-- Unit 1 -->
+    <g id="oct2-u1" data-unit="1" transform="translate(0,0)">
+      <rect x="0" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"/>
+      <rect x="80" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"/>
+      <rect x="160" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"/>
+      <rect x="55" y="0" width="50" height="180" fill="black"/>
+      <rect x="135" y="0" width="50" height="180" fill="black"/>
+      <circle class="dot white-dot" cx="40"  cy="270" r="18" data-key="C"  data-track="red"/>
+      <circle class="dot white-dot" cx="120" cy="270" r="18" data-key="D"  data-track="red"/>
+      <circle class="dot white-dot" cx="200" cy="270" r="18" data-key="E"  data-track="red"/>
+      <circle class="dot black-dot" cx="80"  cy="150" r="18" data-key="Db" data-track="blue"/>
+      <circle class="dot black-dot" cx="160" cy="150" r="18" data-key="Eb" data-track="blue"/>
+    </g>
+    <!-- Unit 2 -->
+    <g id="oct2-u2" data-unit="2" transform="translate(240,0)">
+      <rect x="0"   y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"/>
+      <rect x="80"  y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"/>
+      <rect x="160" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"/>
+      <rect x="240" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"/>
+      <rect x="55" y="0" width="50" height="180" fill="black"/>
+      <rect x="135" y="0" width="50" height="180" fill="black"/>
+      <rect x="215" y="0" width="50" height="180" fill="black"/>
+      <circle class="dot white-dot" cx="40"  cy="270" r="18" data-key="F"  data-track="blue"/>
+      <circle class="dot white-dot" cx="120" cy="270" r="18" data-key="G"  data-track="blue"/>
+      <circle class="dot white-dot" cx="200" cy="270" r="18" data-key="A"  data-track="blue"/>
+      <circle class="dot white-dot" cx="280" cy="270" r="18" data-key="B"  data-track="blue"/>
+      <circle class="dot black-dot" cx="80"  cy="150" r="18" data-key="Gb" data-track="red"/>
+      <circle class="dot black-dot" cx="160" cy="150" r="18" data-key="Ab" data-track="red"/>
+      <circle class="dot black-dot" cx="240" cy="150" r="18" data-key="Bb" data-track="red"/>
+    </g>
+  </g>
+
+  <!-- Dedicated layer for text labels so they always sit above keys/dots -->
+  <g id="labels-layer"></g>
+</svg>
+
+<script>
+  /* =============================================================================
+     Geometry: NO magic numbers outside this block.
+     Change these to adjust positions everywhere consistently.
+     ============================================================================= */
+  const GEOM = {
+    groupY: 60,           // translateY for each octave group
+    whiteW: 80,
+    whiteH: 300,
+    blackH: 180,
+    unit1W: 3*80,         // C D E
+    unit2W: 4*80,         // F G A B
+
+    // Label offsets relative to key top/bottom
+    unitLabelAboveOffset: -6,  // a bit above the key tops
+    unitLabelBelowOffset: 52,  // comfortably below keys
+    noteLabelBelowOffset:  24, // below keys when unit labels are above/hidden
+    noteLabelWithUnitBelowOffset: 14 // below keys, but above "Unit" text
+  };
+
+  // Derived Y positions (global SVG coords)
+  const Y = {
+    keyTop:    GEOM.groupY,
+    keyBottom: GEOM.groupY + GEOM.whiteH,
+    unitAbove: GEOM.groupY + GEOM.unitLabelAboveOffset,
+    unitBelow: GEOM.groupY + GEOM.whiteH + GEOM.unitLabelBelowOffset,
+    labelBelowDefault: GEOM.groupY + GEOM.whiteH + GEOM.noteLabelBelowOffset,
+    labelBelowWhenUnitsBelow: GEOM.groupY + GEOM.whiteH + GEOM.noteLabelWithUnitBelowOffset
+  };
+
+  /* =============================================================================
+     Enharmonics / naming helpers
+     ============================================================================= */
+  const SHARP_TO_FLAT = {
+    "C#":"Db","D#":"Eb","F#":"Gb","G#":"Ab","A#":"Bb","E#":"F","B#":"C"
+  };
+  const toFlat     = n => SHARP_TO_FLAT[n] || n;
+  const normalize  = toFlat;
+  const prefersSharps = key => ["G","D","A","E","B","F#","C#"].includes(key);
+  function displayName(norm, preferSharpsFlag){
+    if (!preferSharpsFlag) return norm;
+    const FLAT_TO_SHARP = {"Db":"C#","Eb":"D#","Gb":"F#","Ab":"G#","Bb":"A#"};
+    return FLAT_TO_SHARP[norm] || norm;
+  }
+
+  /* =============================================================================
+     Major scales (single-octave definition)
+     Keep this expanded & commented so adding scale families later is easy.
+     ============================================================================= */
+  const MAJOR = {
+    "C":  ["C","D","E","F","G","A","B","C"],
+    "G":  ["G","A","B","C","D","E","F#","G"],
+    "D":  ["D","E","F#","G","A","B","C#","D"],
+    "A":  ["A","B","C#","D","E","F#","G#","A"],
+    "E":  ["E","F#","G#","A","B","C#","D#","E"],
+    "B":  ["B","C#","D#","E","F#","G#","A#","B"],
+    "F#": ["F#","G#","A#","B","C#","D#","E#","F#"],
+    "Gb": ["Gb","Ab","Bb","Cb","Db","Eb","F","Gb"],
+    "Db": ["Db","Eb","F","Gb","Ab","Bb","C","Db"],
+    "Ab": ["Ab","Bb","C","Db","Eb","F","G","Ab"],
+    "Eb": ["Eb","F","G","Ab","Bb","C","D","Eb"],
+    "Bb": ["Bb","C","D","Eb","F","G","A","Bb"],
+    "F":  ["F","G","A","Bb","C","D","E","F"]
+  };
+
+  /* =============================================================================
+     Free mode state (no key selected): user toggles notes on/off by clicking dots.
+     We mirror across octaves & enharmonics.
+     ============================================================================= */
+  const manualOn = new Set();
+
+  // UI state
+  let selectedScale = "";   // empty = free mode
+  let showingTwo    = true;
+  let startOnUnit1  = true;
+  let showingLabels = false;
+  let unitLabelPos  = "below";
+
+  /* =============================
+     Dot utilities
+     ============================= */
+  function forEachDotOf(note, fn){
+    const flat  = toFlat(note);
+    const sharp = {"Db":"C#","Eb":"D#","Gb":"F#","Ab":"G#","Bb":"A#"}[flat];
+    const spellings = [flat, sharp].filter(Boolean);
+    [1,2].forEach(oct => {
+      spellings.forEach(s => {
+        document.querySelectorAll(`.dot[data-key="${s}"][data-octave="${oct}"]`).forEach(fn);
+      });
+    });
+  }
+
+  function applyManualDots(){
+    document.querySelectorAll(".dot").forEach(d => d.classList.add("hidden"));
+    manualOn.forEach(n => forEachDotOf(n, el => el.classList.remove("hidden")));
+  }
+
+  function applyScaleDots(){
+    document.querySelectorAll(".dot").forEach(d => d.classList.add("hidden"));
+    const notes = MAJOR[selectedScale] || [];
+    notes.forEach(n => forEachDotOf(n, el => el.classList.remove("hidden")));
+  }
+
+  function onDotClick(e){
+    if (selectedScale) return; // only toggle in free mode
+    const note = toFlat(e.target.getAttribute("data-key"));
+    if (manualOn.has(note)) manualOn.delete(note); else manualOn.add(note);
+    applyManualDots();
+    if (showingLabels) showNoteLabels("Free", Array.from(manualOn), false);
+  }
+
+  // Init dots: tag their octave & attach click handler
+  document.querySelectorAll(".dot").forEach(dot => {
+    const oct = dot.closest("[id^='oct']").getAttribute("data-octave") || "1";
+    dot.setAttribute("data-octave", oct);
+    dot.classList.add("hidden");
+    dot.addEventListener("click", onDotClick);
+  });
+
+  /* =============================
+     Layout — Start on Unit & Unit label position
+     ============================= */
+  function getUnitLabels(oct){
+    const left  = document.getElementById(`oct${oct}-left-label`);
+    const right = document.getElementById(`oct${oct}-right-label`);
+    return { left, right };
+  }
+
+  function applyStartLayout(){
+    ["1","2"].forEach(oct => {
+      const u1 = document.getElementById(`oct${oct}-u1`);
+      const u2 = document.getElementById(`oct${oct}-u2`);
+      const { left, right } = getUnitLabels(oct);
+
+      // Swap units horizontally when starting on Unit 2
+      if (startOnUnit1){
+        u1.setAttribute("transform",`translate(0,0)`);
+        u2.setAttribute("transform",`translate(${GEOM.unit1W},0)`);  // after Unit 1
+        if (left)  left.textContent  = "Unit 1";
+        if (right) right.textContent = "Unit 2";
+      } else {
+        u2.setAttribute("transform",`translate(0,0)`);
+        u1.setAttribute("transform",`translate(${GEOM.unit2W},0)`);  // after Unit 2
+        if (left)  left.textContent  = "Unit 2";
+        if (right) right.textContent = "Unit 1";
+      }
+
+      // Place/hide the "Unit 1 / Unit 2" texts
+      const shouldHide = (unitLabelPos === "hidden") || (oct === "2" && !showingTwo);
+      const y = (unitLabelPos === "above") ? Y.unitAbove : Y.unitBelow;
+      [left, right].forEach(el => {
+        if (!el) return;
+        el.style.display = shouldHide ? "none" : "inline";
+        el.setAttribute("y", String(y));
+      });
+    });
+
+    document.getElementById("toggle-start").textContent =
+      startOnUnit1 ? "Start on Unit 1" : "Start on Unit 2";
+  }
+
+  // ViewBox tweak for single-octave mobile view (prevents clipping)
+  function updateSingleOctaveView(){
+    const svg = document.getElementById("keyboard");
+    const oct1Title = document.getElementById("oct1-title");
+    const { left:oct1Left, right:oct1Right } = getUnitLabels(1);
+
+    if (!showingTwo && window.innerWidth <= 768) {
+      svg.setAttribute("viewBox","0 0 600 450");
+      oct1Title.setAttribute("x","300");
+      if (oct1Left)  oct1Left.setAttribute("x","140");
+      if (oct1Right) oct1Right.setAttribute("x","420");
+    } else {
+      svg.setAttribute("viewBox","0 0 1160 450");
+      oct1Title.setAttribute("x","280");
+      if (oct1Left)  oct1Left.setAttribute("x","120");
+      if (oct1Right) oct1Right.setAttribute("x","400");
+    }
+  }
+
+  /* =============================
+     Note labels rendering
+     ============================= */
+  // live transforms (so Start-on-Unit swaps are respected)
+  const parseTx = tr => { const m=/translate\(([-\d.]+),/.exec(tr||""); return m?parseFloat(m[1]):0; };
+  const groupBase = oct => parseTx(document.getElementById(oct===1?"oct1":"oct2").getAttribute("transform"));
+  const unitTx    = (oct,unit) => parseTx(document.getElementById(`oct${oct}-u${unit}`).getAttribute("transform"));
+
+  // Local X within each unit (explicit for readability)
+  const localCxU1 = { C:40, D:120, E:200, Db:80,  Eb:160 };
+  const localCxU2 = { F:40, G:120, A:200, B:280, Gb:80, Ab:160, Bb:240 };
+  const inU1      = n => ["C","D","E","Db","Eb"].includes(n);
+
+  function xFor(note, oct){
+    const unit = inU1(note) ? 1 : 2;
+    return groupBase(oct) + unitTx(oct, unit) + (unit===1 ? localCxU1[note] : localCxU2[note]);
+  }
+
+  function clearNoteLabels(){
+    document.querySelectorAll("#labels-layer .note-label").forEach(el=>el.remove());
+  }
+
+  function showNoteLabels(scaleName, notes, preferSharpsFlag){
+    clearNoteLabels();
+    const layer = document.getElementById("labels-layer");
+    const mode  = document.getElementById("label-mode").value;
+
+    // Scale degree texts — repeated tonic is "1" (no parentheses)
+    const degNames = {};
+    notes.forEach((n,i)=>{ degNames[normalize(n)] = (i===notes.length-1) ? "1" : String(i+1); });
+
+    // Choose baseline. IMPORTANT: both values are > keyBottom (so below keys).
+    const baseline = (unitLabelPos === "below")
+      ? Y.labelBelowWhenUnitsBelow
+      : Y.labelBelowDefault;
+
+    const octList = showingTwo ? [1,2] : [1];
+
+    octList.forEach(oct=>{
+      notes.forEach(nRaw=>{
+        const n = normalize(nRaw);
+        const text = (mode==="letters") ? displayName(n, preferSharpsFlag) : degNames[n];
+        if (!text) return;
+
+        const lbl = document.createElementNS("http://www.w3.org/2000/svg","text");
+        lbl.setAttribute("x", xFor(n, oct));
+        lbl.setAttribute("y", baseline);
+        lbl.setAttribute("class", "note-label");
+        lbl.textContent = text;
+        layer.appendChild(lbl);
+      });
+    });
+  }
+
+  /* =============================
+     Wire up UI controls
+     ============================= */
+  document.getElementById("toggle-start").addEventListener("click", ()=>{
+    startOnUnit1 = !startOnUnit1;
+    applyStartLayout();
+    if (showingLabels) {
+      const s = selectedScale;
+      const notes = s ? MAJOR[s] : Array.from(manualOn);
+      showNoteLabels(s || "Free", notes, s ? prefersSharps(s) : false);
+    }
+  });
+
+  document.getElementById("unit-label-pos").addEventListener("change", (e)=>{
+    unitLabelPos = e.target.value;
+    applyStartLayout(); // reposition labels
+    if (showingLabels) {
+      const s = selectedScale;
+      const notes = s ? MAJOR[s] : Array.from(manualOn);
+      showNoteLabels(s || "Free", notes, s ? prefersSharps(s) : false);
+    }
+  });
+
+  document.getElementById("toggle-octaves").addEventListener("click", ()=>{
+    showingTwo = !showingTwo;
+    const disp = showingTwo ? "inline" : "none";
+    ["oct2","oct2-title","oct2-left-label","oct2-right-label"].forEach(id=>{
+      const el = document.getElementById(id);
+      if (el) el.style.display = disp;
+    });
+    document.getElementById("toggle-octaves").textContent =
+      showingTwo ? "Show One Octave" : "Show Two Octaves";
+    updateSingleOctaveView();
+    applyStartLayout(); // ensures Octave 2 unit labels stay hidden in single-octave
+    if (selectedScale) applyScaleDots(); else applyManualDots();
+    if (showingLabels) {
+      const s = selectedScale;
+      const notes = s ? MAJOR[s] : Array.from(manualOn);
+      showNoteLabels(s || "Free", notes, s ? prefersSharps(s) : false);
+    }
+  });
+
+  document.getElementById("toggle-labels").addEventListener("click", ()=>{
+    showingLabels = !showingLabels;
+    const btn = document.getElementById("toggle-labels");
+    if (!showingLabels) {
+      clearNoteLabels();
+      btn.textContent = "Show Note Labels";
+    } else {
+      const s = selectedScale;
+      const notes = s ? MAJOR[s] : Array.from(manualOn);
+      showNoteLabels(s || "Free", notes, s ? prefersSharps(s) : false);
+      btn.textContent = "Hide Note Labels";
+    }
+  });
+
+  document.getElementById("label-mode").addEventListener("change", ()=>{
+    if (!showingLabels) return;
+    const s = selectedScale;
+    const notes = s ? MAJOR[s] : Array.from(manualOn);
+    showNoteLabels(s || "Free", notes, s ? prefersSharps(s) : false);
+  });
+
+  document.getElementById("scale-select").addEventListener("change", e=>{
+    selectedScale = e.target.value;
+    document.querySelectorAll(".dot").forEach(d => d.classList.add("hidden"));
+    if (!selectedScale) {
+      applyManualDots();
+      if (showingLabels) showNoteLabels("Free", Array.from(manualOn), false);
+      return;
+    }
+    applyScaleDots();
+    if (showingLabels) showNoteLabels(selectedScale, MAJOR[selectedScale], prefersSharps(selectedScale));
+  });
+
+  /* =============================
+     Initial setup
+     ============================= */
+  applyStartLayout();
+  updateSingleOctaveView();
+  window.addEventListener("resize", updateSingleOctaveView);
+
+  // Default FREE-MODE starter: red track (C D E F# G# A#)
+  ["C","D","E","F#","G#","A#"].forEach(n => manualOn.add(toFlat(n)));
+  applyManualDots();
+</script>
+</body>
+</html>
