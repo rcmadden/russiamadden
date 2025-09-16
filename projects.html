@@ -8,6 +8,7 @@
     <meta name="description" content="Russia Madden">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" sizes="16x16 24x24 32x32 64x64"/>
       <link rel="stylesheet" href="./style.css">
+      <link rel="stylesheet" href="./helper.css">
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -48,20 +49,19 @@
  </style> 
 </head>
   <body> 
-    <nav class="navbar fixed-top navbar-light bg-light">
-        <a class="navbar-brand mb-0 h1" href="index.html">Russia Madden > Back</a>
+    <nav class="navbar fixed-top navbar-light bg-light" style="padding: .5rem 1rem;">
+        <span class="navbar-brand mb-0 h1">Russia Madden > <a href="index.html" class="text-link"> Home</a></span>
     </nav>
-
     <!-- <div class="flex-md-equal w-100 my-md-3 pl-md-3 nav-pad">
         <div class="bg-light mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center">
             <div class="mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center">
                 <div class="my-3 py-3">
                     <h1 class="display-5">Projects</h1>
                     </div>
-                    <h2 class="display-7">QuoteSkye.com</a></h2>
+                    <h2 class="display-7"><a href="#" class="text-link">QuoteSkye.com</a></h2>
                     <p class="lead">Built With: Python, Flask, xpdf, Bootstrap, Git</p>
                     <p class="body mx-auto" style="max-width:400px">A web app, web service and command line tool that reads data from pdf, csv, txt and docx files, and dynamically generates random quotes overlaid on a random image.</p>
-                    <a class="link-light" href="https://www.quoteskye.com" target="_blank"><img style="width: 400px;" src="quoteskye_screenshot.png"    class="img-thumbnail mx-auto" alt="Screenshot of Qutoeskye.com webpage"></a>
+                    <a class="link-light image-card" href="https://www.quoteskye.com" target="_blank"><img style="width: 400px;" src="quoteskye_screenshot.png" class="img-thumbnail" alt="Screenshot of Qutoeskye.com webpage"></a>
                 </div>
             </div>
         </div> -->
@@ -70,37 +70,38 @@
 <div class="container">
   <div class="mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center">
     <h1 class="display-5">Projects</h1>
+    <!-- <div class="mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center"> -->
     <div class="my-3 py-3">
-        <h2 class="display-7">images-gallery</a></h2>
+      <h2 class="display-7"><a href="music-tools.html" target="_blank" class="text-link">music-tools</a></h2>
+      <p class="lead">Built With: Vanilla Javascript, HTML, and CSS</p>
+      <p class="body mx-auto" style="max-width:400px">2 weekend projects built without dependencies using basic web technologies. 1. A JavaScript chart builder for making piano diagrams.  2. HTML tables and Javascript csv reader and renderer for "My Deck" and "8 track" souvenir collectors: Proof of concept for referencing notes and data about songs. 
+      </p>
+      <a class="link-light image-card" href="music-tools.html" target="_blank"><img style="width: 400px;" src="assets/img/music-tools.png" class="img-thumbnail" alt="Screenshot of webpage"></a>
+    </div>
+  <!-- </div>   -->
+    
+    <div class="my-3 py-3">
+        <h2 class="display-7"><a href="https://github.com/rcmadden/images-gallery" target="_blank"class="text-link">images-gallery</a></h2>
         <p class="lead">Built With: Python, Flask, React, React-Bootstrap,</p>
         <p class="lead">MongoDB and Docker</p>
         <p class="body mx-auto" style="max-width:400px">An image gallery using the Unsplash API, Flask on the backend and React on the frontend.  Features include image search by title, save and delete a collection of images including when available author name, link to portfolio and image location. Status notifications implemented using React-Tostify.</p>
-        <a class="link-light" href="https://github.com/rcmadden/images-gallery" target="_blank"><img style="width: 400px;" src="images-gallery-screenshot.png"    class="img-thumbnail mx-auto" alt="Screenshot of images-gallery page"></a>
+        <a class="link-light image-card" href="https://github.com/rcmadden/images-gallery" target="_blank"><img style="width: 400px;" src="images-gallery-screenshot.png" class="img-thumbnail" alt="Screenshot of images-gallery page"></a>
     </div>
   </div>  
   <div class="mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center">
     <div class="my-3 py-3">
-      <h2 class="display-7">QuoteSkye.com</a></h2>
+      <h2 class="display-7"><a href="https://www.quoteskye.com" target="_blank" class="text-link">QuoteSkye.com</a></h2>
       <p class="lead">Built With: Python, Flask, xpdf and Bootstrap</p>
       <p class="body mx-auto" style="max-width:400px">A web app, web service and command line tool that reads data from pdf, csv, txt and docx files, and dynamically generates random quotes overlaid on a random image.</p>
-      <a class="link-light" href="https://www.quoteskye.com" target="_blank"><img style="width: 400px;" src="quoteskye_screenshot.png"    class="img-thumbnail mx-auto" alt="Screenshot of Qutoeskye.com webpage"></a>
+      <a class="link-light image-card" href="https://www.quoteskye.com" target="_blank"><img style="width: 400px;" src="quoteskye_screenshot.png" class="img-thumbnail" alt="Screenshot of Qutoeskye.com webpage"></a>
     </div>
-  </div>
+  </div>  
   <div class="mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center">
     <div class="my-3 py-3">
-      <h2 class="display-7">Music-Tools</a></h2>
-      <p class="lead">HTML, CSS, Javascript</p>
-      <p class="body mx-auto" style="max-width:400px">2 weekend projects built without dependencies using basic web technologies. 1. Red Track/Blue track chart tool for making piano diagrams.  2. My Deck and 8 track souvenir collector rendered dynamically from a csv data file. 
-      </p>
-      <a class="link-light" href="music-tools.html" target="_blank"><img style="width: 400px;" src="assets/img/music-tools.png"    class="img-thumbnail mx-auto" alt="Screenshot of webpage"></a>
-    </div>
-  </div>    
-  <div class="mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center">
-    <div class="my-3 py-3">
-        <h2 class="display-7">GitHub</a></h2>
+        <h2 class="display-7"><a href="https://github.com/rcmadden" target="_blank"class="text-link">GitHub</a></h2>
         <p class="lead">Additional projects on github</p>
         <p class="body mx-auto" style="max-width:400px">https://github.com/rcmadden</p>
-        <a class="link-light" href="https://github.com/rcmadden" target="_blank"><img style="width: 400px;" src="github_projects_screenshot.png"    class="img-thumbnail mx-auto" alt="Screenshot of github.com/rcmadden webpage"></a>
+        <a class="link-light image-card" href="https://github.com/rcmadden" target="_blank"><img style="width: 400px;" src="github_projects_screenshot.png" class="img-thumbnail" alt="Screenshot of github.com/rcmadden webpage"></a>
     </div>   
   </div>
 </div>
