@@ -140,8 +140,8 @@
 
     <div class="dropdown">
       <select id="unit-label-pos" aria-label="Unit labels position">
-        <option value="below" selected>Unit Labels: Below</option>
-        <option value="above">Unit Labels: Above</option>
+        <option value="above" selected>Unit Labels: Above</option>
+        <option value="below">Unit Labels: Below</option>
         <option value="hidden">Unit Labels: Hidden</option>
       </select>
     </div>
@@ -223,7 +223,7 @@
   let showingTwo = false; // Start with single octave for reference chart
   let startOnUnit1 = true;
   let showingLabels = false;
-  let unitLabelPos = "below";
+  let unitLabelPos = "above"; // "above" | "below" | "hidden"
   let layoutMode = "two-column";
 
   /* =============================
