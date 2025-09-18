@@ -37,22 +37,31 @@
     margin:0; padding:0;
   }
   header {
-    display:flex; align-items:center; justify-content:center; gap:12px;
-    padding:12px 16px; background:#fff; border-bottom:1px solid #e5e5e5;
-    position:sticky; top:0; z-index:10;
+    background:#fff; border-bottom:1px solid #e5e5e5;
+    position:sticky; top:0; z-index:1050;
+  }
+  .header-row-1 {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 16px;
+  }
+  .header-row-2 {
+    padding:8px 16px; border-top:1px solid #f0f0f0;
   }
   h1 { margin:0; font-size:22px; font-weight:800; }
-  .controls { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+  .controls {
+    display:flex; gap:12px; flex-wrap:wrap;
+    max-height:80px; overflow-x:auto; overflow-y:hidden;
+  }
+  @media (max-width: 768px) {
+    .controls { max-height:160px; }
+  }
   .btn, .dropdown select{
     font-size:16px; padding:10px 12px; border-radius:10px;
     border:1px solid #cfcfcf; background:#fff; cursor:pointer;
   }
   .btn:hover, .dropdown select:focus { box-shadow: 0 0 0 2px rgba(30,144,255,.25); outline:none; }
   .dropdown { position:relative; display:inline-block; }
-  .dropdown::after {
-    content:"▼"; position:absolute; right:10px; top:50%; transform:translateY(-50%);
-    pointer-events:none; font-size:12px; color:#666;
-  }
+  .dropdown::after { display:none; }
   .dropdown select { padding-right:28px; }
 
   /* =============================
@@ -134,21 +143,17 @@
 <body>
 
 <header>
-<span class="navbar-brand mb-0 h1">Projects > <a href="units.html" class="text-link"> Units</a></span>
-  <!-- <h1>Red Track/Blue Track Chart Maker</h1> -->
-  <div class="controls">
-    
-  <h1>Units Reference Chart</h1>
-  <div class="controls">
-    <div class="dropdown">
-      <select id="layout-mode" aria-label="Layout Mode">
-        <option value="two-column">Layout: 2-Column (1 octave, 1 page)</option>
-        <option value="one-column">Layout: 1-Column (2 octaves, 2 pages)</option>
-      </select>
-    </div>
+  <div class="header-row-1">
+    <span class="navbar-brand mb-0 h1">Projects > <a href="units.html" class="text-link"> Units</a></span>
+    <h1>Units Reference Chart</h1>
+    <span></span>
+  </div>
+  <div class="header-row-2">
+    <div class="controls">
 
     <div class="dropdown">
       <select id="label-mode" aria-label="Label Mode">
+        <option value="hide">Labels: Hide</option>
         <option value="letters">Labels: Note Names</option>
         <option value="degrees">Labels: Scale Degrees</option>
       </select>
@@ -162,8 +167,9 @@
       </select>
     </div>
 
-    <button id="toggle-labels" class="btn">Show Note Labels</button>
+    <button id="toggle-octaves" class="btn">Show Two Octaves</button>
     <button id="toggle-start" class="btn">Start on Unit 1</button>
+    </div>
   </div>
 </header>
 
@@ -428,11 +434,6 @@
   /* =============================
      Event Handlers
      ============================= */
-  document.getElementById("layout-mode").addEventListener("change", (e) => {
-    layoutMode = e.target.value;
-    showingTwo = layoutMode === "one-column";
-    generateChart();
-  });
 
   document.getElementById("toggle-start").addEventListener("click", () => {
     startOnUnit1 = !startOnUnit1;
@@ -446,17 +447,22 @@
     generateChart();
   });
 
-  document.getElementById("toggle-labels").addEventListener("click", () => {
-    showingLabels = !showingLabels;
-    const btn = document.getElementById("toggle-labels");
-    btn.textContent = showingLabels ? "Hide Note Labels" : "Show Note Labels";
+  document.getElementById("toggle-octaves").addEventListener("click", () => {
+    showingTwo = !showingTwo;
+    layoutMode = showingTwo ? "one-column" : "two-column";
+    const btn = document.getElementById("toggle-octaves");
+    btn.textContent = showingTwo ? "Show One Octave" : "Show Two Octaves";
     generateChart();
   });
 
-  document.getElementById("label-mode").addEventListener("change", () => {
-    if (showingLabels) {
-      generateChart();
+  document.getElementById("label-mode").addEventListener("change", (e) => {
+    const mode = e.target.value;
+    if (mode === "hide") {
+      showingLabels = false;
+    } else {
+      showingLabels = true;
     }
+    generateChart();
   });
 
   // Initial generation
