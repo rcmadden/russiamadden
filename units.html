@@ -37,22 +37,31 @@
     margin:0; padding:0;
   }
   header {
-    display:flex; align-items:center; justify-content:space-between; gap:12px;
-    padding:12px 16px; background:#fff; border-bottom:1px solid #e5e5e5;
-    position:sticky; top:0; z-index:1050; flex-wrap:wrap;
+    background:#fff; border-bottom:1px solid #e5e5e5;
+    position:sticky; top:0; z-index:1050;
+  }
+  .header-row-1 {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 16px;
+  }
+  .header-row-2 {
+    padding:8px 16px; border-top:1px solid #f0f0f0;
   }
   h1 { margin:0; font-size:22px; font-weight:800; }
-  .controls { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+  .controls {
+    display:flex; gap:12px; flex-wrap:wrap;
+    max-height:80px; overflow-x:auto; overflow-y:hidden;
+  }
+  @media (max-width: 768px) {
+    .controls { max-height:160px; }
+  }
   .btn, .dropdown select{
     font-size:16px; padding:10px 12px; border-radius:10px;
     border:1px solid #cfcfcf; background:#fff; cursor:pointer;
   }
   .btn:hover, .dropdown select:focus { box-shadow: 0 0 0 2px rgba(30,144,255,.25); outline:none; }
   .dropdown { position:relative; display:inline-block; }
-  .dropdown::after {
-    content:"▼"; position:absolute; right:10px; top:50%; transform:translateY(-50%);
-    pointer-events:none; font-size:12px; color:#666;
-  }
+  .dropdown::after { display:none; }
   .dropdown select { padding-right:28px; }
 
   /* =============================
@@ -73,10 +82,13 @@
 </head>
 <body>
 <header>
-  <span class="navbar-brand mb-0 h1">Russia Madden > Projects <a href="projects.html" class="text-link">> Back</a></span>
-  <h1>Red Track/Blue Track Chart Maker</h1>
-  <p><a href="reference-chart.html">12 Key Chart</a></p>
-  <div class="controls">
+  <div class="header-row-1">
+    <span class="navbar-brand mb-0 h1">Russia Madden > Projects <a href="projects.html" class="text-link">> Back</a></span>
+    <h1>Red Track/Blue Track Chart Maker</h1>
+    <p><a href="reference-chart.html">12 Key Chart</a></p>
+  </div>
+  <div class="header-row-2">
+    <div class="controls">
     
     <!-- Keep key list explicit for readability & reordering -->
     <div class="dropdown">
@@ -100,6 +112,7 @@
 
     <div class="dropdown">
       <select id="label-mode" aria-label="Label Mode">
+        <option value="hide">Labels: Hide</option>
         <option value="letters">Labels: Note Names</option>
         <option value="degrees">Labels: Scale Degrees</option>
       </select>
@@ -114,9 +127,9 @@
       </select>
     </div>
 
-    <button id="toggle-labels"   class="btn">Show Note Labels</button>
     <button id="toggle-octaves"  class="btn">Show Two Octaves</button>
     <button id="toggle-start"    class="btn">Start on Unit 1</button>
+    </div>
   </div>
 </header>
 <!--
@@ -497,25 +510,18 @@
     }
   });
 
-  document.getElementById("toggle-labels").addEventListener("click", ()=>{
-    showingLabels = !showingLabels;
-    const btn = document.getElementById("toggle-labels");
-    if (!showingLabels) {
+
+  document.getElementById("label-mode").addEventListener("change", (e)=>{
+    const mode = e.target.value;
+    if (mode === "hide") {
+      showingLabels = false;
       clearNoteLabels();
-      btn.textContent = "Show Note Labels";
     } else {
+      showingLabels = true;
       const s = selectedScale;
       const notes = s ? MAJOR[s] : Array.from(manualOn);
       showNoteLabels(s || "Free", notes, s ? prefersSharps(s) : false);
-      btn.textContent = "Hide Note Labels";
     }
-  });
-
-  document.getElementById("label-mode").addEventListener("change", ()=>{
-    if (!showingLabels) return;
-    const s = selectedScale;
-    const notes = s ? MAJOR[s] : Array.from(manualOn);
-    showNoteLabels(s || "Free", notes, s ? prefersSharps(s) : false);
   });
 
   document.getElementById("scale-select").addEventListener("change", e=>{
