@@ -137,6 +137,52 @@
       grid-template-columns: 1fr;
     }
     svg { width: 96vw; height:auto; }
+
+    /* Mobile header layout fixes */
+    .header-row-1 {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      padding: 8px 12px;
+    }
+    .navbar-brand {
+      font-size: 14px;
+    }
+    h1 {
+      font-size: 18px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      max-width: 100%;
+    }
+
+    /* Force controls to stay in max 2 rows with horizontal scroll */
+    .controls {
+      max-height: 100px !important;
+      overflow-x: auto;
+      overflow-y: hidden;
+      flex-wrap: nowrap;
+      -webkit-overflow-scrolling: touch;
+    }
+    .controls > * {
+      flex-shrink: 0;
+      min-width: auto;
+    }
+
+    /* Header collapse on scroll */
+    .header-collapsed .header-row-2 {
+      display: none;
+    }
+    .header-collapsed .header-row-1 {
+      padding: 4px 8px;
+      font-size: 12px;
+    }
+    .header-collapsed h1 {
+      font-size: 14px;
+    }
+    .header-collapsed .navbar-brand {
+      font-size: 11px;
+    }
   }
 </style>
 </head>
@@ -144,7 +190,7 @@
 
 <header>
   <div class="header-row-1">
-    <span class="navbar-brand mb-0 h1">Projects > <a href="units.html" class="text-link"> Units</a></span>
+    <span class="navbar-brand mb-0 h1">Russia Madden > <a href="units.html" class="text-link">Units</a></span>
     <h1>Units Reference Chart</h1>
     <span></span>
   </div>
@@ -464,6 +510,31 @@
     }
     generateChart();
   });
+
+  /* =============================
+     Mobile header collapse on scroll
+     ============================= */
+  let lastScrollY = window.scrollY;
+  const header = document.querySelector('header');
+
+  function handleScroll() {
+    if (window.innerWidth <= 768) {
+      if (window.scrollY > lastScrollY && window.scrollY > 50) {
+        // Scrolling down - collapse header
+        header.classList.add('header-collapsed');
+      } else if (window.scrollY < lastScrollY) {
+        // Scrolling up - show full header
+        header.classList.remove('header-collapsed');
+      }
+    } else {
+      // Desktop - always show full header
+      header.classList.remove('header-collapsed');
+    }
+    lastScrollY = window.scrollY;
+  }
+
+  window.addEventListener('scroll', handleScroll);
+  window.addEventListener('resize', handleScroll);
 
   // Initial generation
   generateChart();
