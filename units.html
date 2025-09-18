@@ -141,7 +141,7 @@
     <!-- Keep key list explicit for readability & reordering -->
     <div class="dropdown">
       <select id="scale-select" aria-label="Select Major Key">
-        <option value="">Free mode (no key selected)</option>
+        <option value="">Custom pattern (tap dots)</option>
         <option>C</option>
         <option>G</option>
         <option>D</option>
@@ -160,9 +160,9 @@
 
     <div class="dropdown">
       <select id="label-mode" aria-label="Label Mode">
-        <option value="hide">Labels: Hide</option>
-        <option value="letters">Labels: Note Names</option>
-        <option value="degrees">Labels: Scale Degrees</option>
+        <option value="hide">No Labels</option>
+        <option value="letters">Note Names</option>
+        <option value="degrees">Numbers</option>
       </select>
     </div>
 
@@ -276,6 +276,11 @@
   <!-- Dedicated layer for text labels so they always sit above keys/dots -->
   <g id="labels-layer"></g>
 </svg>
+<footer class="text-center mt-4 mb-4">
+<div class="mt-4" style="text-align: left; margin-left:1rem;">
+  <a href="releases" class="text-link"><div><small>Version: 0.0.2</small></div></a>
+</div>
+</footer>
 
 <script>
   /* =============================================================================
@@ -620,5 +625,6 @@
   ["C","D","E","F#","G#","A#"].forEach(n => manualOn.add(toFlat(n)));
   applyManualDots();
 </script>
+
 </body>
 </html>
