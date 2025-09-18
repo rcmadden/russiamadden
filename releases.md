@@ -3,7 +3,7 @@
 ## Version 0.0.2 - September 18, 2025
 
 ### ✨ New Features
-- **Streamlined Labels control** - Single dropdown with Hide/Note Names/Scale Degrees options (removed separate show/hide button)
+- **Streamlined Labels control** - Single dropdown with Hide/Note Names/Scale Degrees options (removed separate show/hide button) and improved options for clarity
 - **Improved mobile navigation** - Controls now display in compact row format with horizontal scrolling
 
 ### 🐛 Bug Fixes
