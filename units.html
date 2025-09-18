@@ -250,7 +250,12 @@
      Enharmonics / naming helpers
      ============================================================================= */
   const SHARP_TO_FLAT = {
-    "C#":"Db","D#":"Eb","F#":"Gb","G#":"Ab","A#":"Bb","E#":"F","B#":"C"
+    // Sharps to flats
+    "C#":"Db","D#":"Eb","F#":"Gb","G#":"Ab","A#":"Bb",
+    // Sharp naturals to naturals
+    "E#":"F","B#":"C",
+    // Flat naturals to naturals (fixes Cb = B issue)
+    "Cb":"B","Fb":"E"
   };
   const toFlat     = n => SHARP_TO_FLAT[n] || n;
   const normalize  = toFlat;
