@@ -21,7 +21,7 @@
 body {
   position: relative;
   width: 100vw;
-  height: 100vh;
+  /* height: 100vh; */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -44,8 +44,15 @@ body:after {
 .container {
   position: relative;
   width: 75vmin;
-  height: 40vmin;
+  /* height: 40vmin; */
   perspective: 200vmin;
+}
+
+body.homepage {
+  height: 100vh;
+}
+.container.homepage {
+  height: 40vmin;
 }
 
 .card {
