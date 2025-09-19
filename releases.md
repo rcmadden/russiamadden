@@ -1,5 +1,25 @@
 # Release Notes: Red Track/Blue Track Chart Maker
   [← Back to Units](units.html)
+## Version 0.0.3 - September 19, 2025
+
+### 🔧 Improvements
+- **Bootstrap integration** - Migrated from custom CSS to Bootstrap 5 framework for improved styling
+- **Enhanced mobile controls** - Implemented horizontal scrolling for controls with improved touch support
+- **Consistent UI elements** - Unified dropdown and button styling across Units and Reference Chart pages
+- **Page-specific CSS fixes** - Resolved layout conflicts between homepage and projects pages
+
+### 🐛 Bug Fixes
+- **Control styling consistency** - Fixed dropdown arrow duplication and button border inconsistencies
+- **Mobile responsive layout** - Improved header collapse behavior and control centering
+- **CSS specificity conflicts** - Resolved duplicate body styles causing layout jumps
+
+### 📝 Documentation
+- Updated release notes formatting and navigation links
+
+### 🚧 Known Issues
+- Mobile control centering needs refinement (controls may overlap with chart elements on desktop)
+- Additional responsive design improvements in progress
+
 ## Version 0.0.2 - September 18, 2025
 
 ### ✨ New Features
