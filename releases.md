@@ -1,5 +1,5 @@
-# Release Notes
-
+# Release Notes: Red Track/Blue Track Chart Maker
+  [← Back to Units](units.html)
 ## Version 0.0.2 - September 18, 2025
 
 ### ✨ New Features
@@ -7,7 +7,7 @@
 - **Improved mobile navigation** - Controls now display in compact row format with horizontal scrolling
 
 ### 🐛 Bug Fixes
-- **Fixed Gb major scale** - Resolved issue where note not displaying correctly due to enharmonic mapping (Cb/Fb support)
+- **Fixed Gb major scale** - Resolved issue where note not displaying correctly due to enharmonic mapping (added Cb/Fb support)
 - **Mobile layout issues** - Fixed control wrapping and navigation text overflow
 
 ### 🔧 Improvements
@@ -17,3 +17,5 @@
 
 ## Version 0.0.1 - [September 15, 2025]
 Initial release of Red Track/Blue Track Chart Maker
+
+ [← Back to Units](units.html) | [Reference Chart](reference-chart.html)
