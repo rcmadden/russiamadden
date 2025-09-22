@@ -1,5 +1,20 @@
 # Release Notes: Red Track/Blue Track Chart Maker
   [← Back to Units](units.html)
+
+## Version 0.0.4 - (September 21, 2025)
+
+### 🐛 Bug Fixes
+- **Reference Chart label alignment** - Fixed black key note labels to properly center on black keys
+- **Unit label positioning** - Improved spacing and consistency when unit labels are positioned below keys
+- **Note label consistency** - Note labels now maintain consistent position regardless of unit label placement
+
+### 🔧 Improvements
+- **Musical symbols** - Added proper sharp (♯) and flat (♭) symbols for improved readability
+- **Font styling override** - Added CSS override to ensure consistent font size for note labels
+- **Label spacing adjustments** - Increased unit label spacing when positioned below for better readability
+- **Visual consistency** - Matched dot stroke color to fill for consistent appearance
+ **Reference Chart 2 column alignment** - For improved ability to compare multiple landscapes on small screns
+
 ## Version 0.0.3 - September 19, 2025
 
 ### 🔧 Improvements
