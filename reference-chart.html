@@ -266,12 +266,12 @@
 
     // Black keys
     if (isUnit1) {
-      unitSvg += `<rect x="${GEOM.whiteW - 25}" y="0" width="30" height="${GEOM.blackH}" fill="black"/>`;
-      unitSvg += `<rect x="${2 * GEOM.whiteW - 25}" y="0" width="30" height="${GEOM.blackH}" fill="black"/>`;
+      unitSvg += `<rect x="${GEOM.whiteW - 14}" y="0" width="30" height="${GEOM.blackH}" fill="black"/>`;
+      unitSvg += `<rect x="${2 * GEOM.whiteW - 14}" y="0" width="30" height="${GEOM.blackH}" fill="black"/>`;
     } else {
-      unitSvg += `<rect x="${GEOM.whiteW - 25}" y="0" width="30" height="${GEOM.blackH}" fill="black"/>`;
-      unitSvg += `<rect x="${2 * GEOM.whiteW - 25}" y="0" width="30" height="${GEOM.blackH}" fill="black"/>`;
-      unitSvg += `<rect x="${3 * GEOM.whiteW - 25}" y="0" width="30" height="${GEOM.blackH}" fill="black"/>`;
+      unitSvg += `<rect x="${GEOM.whiteW - 14}" y="0" width="30" height="${GEOM.blackH}" fill="black"/>`;
+      unitSvg += `<rect x="${2 * GEOM.whiteW - 14}" y="0" width="30" height="${GEOM.blackH}" fill="black"/>`;
+      unitSvg += `<rect x="${3 * GEOM.whiteW - 14}" y="0" width="30" height="${GEOM.blackH}" fill="black"/>`;
     }
 
     // Dots for white keys
@@ -283,13 +283,13 @@
     // Dots for black keys
     if (isUnit1) {
       const track = startOnUnit1 ? "blue" : "red";
-      unitSvg += `<circle class="dot" cx="${GEOM.whiteW - 25 + 15}" cy="${GEOM.blackH - 20}" r="${GEOM.dotRadius}" data-key="Db" data-track="${track}"/>`;
-      unitSvg += `<circle class="dot" cx="${2 * GEOM.whiteW - 25 + 15}" cy="${GEOM.blackH - 20}" r="${GEOM.dotRadius}" data-key="Eb" data-track="${track}"/>`;
+      unitSvg += `<circle class="dot" cx="${GEOM.whiteW - 14 + 15}" cy="${GEOM.blackH - 20}" r="${GEOM.dotRadius}" data-key="Db" data-track="${track}"/>`;
+      unitSvg += `<circle class="dot" cx="${2 * GEOM.whiteW - 14 + 15}" cy="${GEOM.blackH - 20}" r="${GEOM.dotRadius}" data-key="Eb" data-track="${track}"/>`;
     } else {
       const track = startOnUnit1 ? "red" : "blue";
-      unitSvg += `<circle class="dot" cx="${GEOM.whiteW - 25 + 15}" cy="${GEOM.blackH - 20}" r="${GEOM.dotRadius}" data-key="Gb" data-track="${track}"/>`;
-      unitSvg += `<circle class="dot" cx="${2 * GEOM.whiteW - 25 + 15}" cy="${GEOM.blackH - 20}" r="${GEOM.dotRadius}" data-key="Ab" data-track="${track}"/>`;
-      unitSvg += `<circle class="dot" cx="${3 * GEOM.whiteW - 25 + 15}" cy="${GEOM.blackH - 20}" r="${GEOM.dotRadius}" data-key="Bb" data-track="${track}"/>`;
+      unitSvg += `<circle class="dot" cx="${GEOM.whiteW - 14 + 15}" cy="${GEOM.blackH - 20}" r="${GEOM.dotRadius}" data-key="Gb" data-track="${track}"/>`;
+      unitSvg += `<circle class="dot" cx="${2 * GEOM.whiteW - 14 + 15}" cy="${GEOM.blackH - 20}" r="${GEOM.dotRadius}" data-key="Ab" data-track="${track}"/>`;
+      unitSvg += `<circle class="dot" cx="${3 * GEOM.whiteW - 14 + 15}" cy="${GEOM.blackH - 20}" r="${GEOM.dotRadius}" data-key="Bb" data-track="${track}"/>`;
     }
 
     unitSvg += '</g>';
