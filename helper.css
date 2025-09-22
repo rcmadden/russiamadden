@@ -62,9 +62,9 @@
   svg { margin-top:12px; }
   text.octave-label { font-size:20px; font-weight:600; fill:#0f172a; text-anchor:middle; }
   text.unit-label   { font-size:18px; font-weight:500; fill:#0f172a; text-anchor:middle; }
-  .dot { stroke:#111; stroke-width:4; cursor:pointer; }
-  .dot[data-track="red"]  { fill:#ff69b4; }
-  .dot[data-track="blue"] { fill:#1e90ff; }
+  .dot { stroke-width:1; cursor:pointer; }
+  .dot[data-track="red"]  { fill:#ff69b4; stroke:#ff69b4 }
+  .dot[data-track="blue"] { fill:#1e90ff; stroke:#1e90ff; }
   .hidden { opacity:0; }
   .note-label { font-size:18px; fill:#111; text-anchor:middle; user-select:none; }
 
