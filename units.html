@@ -332,9 +332,13 @@
   const normalize  = toFlat;
   const prefersSharps = key => ["G","D","A","E","B","F#","C#"].includes(key);
   function displayName(norm, preferSharpsFlag){
-    if (!preferSharpsFlag) return norm;
+    if (!preferSharpsFlag) 
+      return norm.replace('#', '♯').replace('b', '♭');
     const FLAT_TO_SHARP = {"Db":"C#","Eb":"D#","Gb":"F#","Ab":"G#","Bb":"A#"};
-    return FLAT_TO_SHARP[norm] || norm;
+    let result = FLAT_TO_SHARP[norm] || norm;
+     // Replace # and b with musical symbols
+    result = result.replace('#', '♯').replace('b', '♭');
+    return result;
   }
 
   /* =============================================================================

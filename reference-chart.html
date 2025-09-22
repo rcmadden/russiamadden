@@ -83,7 +83,7 @@
 
     /* Minimize title size and spacing */
     .key-title {
-      font-size: 12px;
+      /* font-size: 12px; */
       margin: 0;
       padding: 1px 0;
       line-height: 1;
@@ -153,7 +153,7 @@
     unitLabelAboveOffset: -4,
     unitLabelBelowOffset: 32,
     noteLabelBelowOffset: 18,
-    noteLabelWithUnitBelowOffset: 10
+    noteLabelWithUnitBelowOffset: -8
   };
 
   const Y = {
@@ -180,9 +180,14 @@
   const normalize = toFlat;
   const prefersSharps = key => ["G","D","A","E","B","F#","C#"].includes(key);
   function displayName(norm, preferSharpsFlag){
-    if (!preferSharpsFlag) return norm;
+    if (!preferSharpsFlag) 
+      return norm.replace('#', '♯').replace('b', '♭');
     const FLAT_TO_SHARP = {"Db":"C#","Eb":"D#","Gb":"F#","Ab":"G#","Bb":"A#"};
-    return FLAT_TO_SHARP[norm] || norm;
+    let = result = FLAT_TO_SHARP[norm] || norm;
+     // Replace # and b with musical symbols
+    result = result.replace('#', '♯').replace('b', '♭');
+    return result;
+
   }
 
   const MAJOR = {
@@ -289,7 +294,7 @@
       const track = startOnUnit1 ? "red" : "blue";
       unitSvg += `<circle class="dot" cx="${GEOM.whiteW - 14 + 15}" cy="${GEOM.blackH - 20}" r="${GEOM.dotRadius}" data-key="Gb" data-track="${track}"/>`;
       unitSvg += `<circle class="dot" cx="${2 * GEOM.whiteW - 14 + 15}" cy="${GEOM.blackH - 20}" r="${GEOM.dotRadius}" data-key="Ab" data-track="${track}"/>`;
-      unitSvg += `<circle class="dot" cx="${3 * GEOM.whiteW - 14 + 15}" cy="${GEOM.blackH - 20}" r="${GEOM.dotRadius}" data-key="Bb" data-track="${track}"/>`;
+      unitSvg += `<circle class="dot" cx="${3 * GEOM.whiteW - 14+ 15}" cy="${GEOM.blackH - 20}" r="${GEOM.dotRadius}" data-key="Bb" data-track="${track}"/>`;
     }
 
     unitSvg += '</g>';
@@ -350,9 +355,7 @@
       degNames[normalize(n)] = (i === notes.length - 1) ? "1" : String(i + 1);
     });
 
-    const baseline = (unitLabelPos === "below")
-      ? Y.labelBelowWhenUnitsBelow
-      : Y.labelBelowDefault;
+    const baseline = Y.labelBelowDefault;
 
     const octaves = layoutMode === "one-column" ? 2 : 1;
 
@@ -382,8 +385,8 @@
       : (isUnit1Note ? GEOM.unit2W : 0);
 
     const localPositions = {
-      "C": 25, "D": 75, "E": 125, "Db": 40, "Eb": 90,
-      "F": 25, "G": 75, "A": 125, "B": 175, "Gb": 40, "Ab": 90, "Bb": 140
+      "C": 25, "D": 75, "E": 125, "Db": 51, "Eb": 101,
+      "F": 25, "G": 75, "A": 125, "B": 175, "Gb": 51, "Ab": 101, "Bb": 151
     };
 
     return octaveOffset + unitOffset + (localPositions[note] || 0);
