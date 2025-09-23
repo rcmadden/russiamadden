@@ -1,6 +1,9 @@
 # Release Notes: Red Track/Blue Track Chart Maker
   [← Back to Units](units.html)
 
+## Version 0.0.5 - (September 22, 2025)
+- **Units Notes label alignment** - Fixed labels to display below keys when units below selected.
+
 ## Version 0.0.4 - (September 21, 2025)
 
 ### 🐛 Bug Fixes
