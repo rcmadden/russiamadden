@@ -1,0 +1,10 @@
+<svg viewBox="-10 0 150 150" xmlns="http://www.w3.org/2000/svg">
+  <!-- Flag pole -->
+  <rect x="10" y="10" width="6" height="130" fill="#8B7355" stroke="#6B5940" stroke-width="1"/>
+
+  <!-- Pole top circle -->
+  <circle cx="13" cy="15" r="8" fill="#D4AF37" stroke="#B8941F" stroke-width="1"/>
+
+  <!-- Triangle flag -->
+  <polygon points="16,25 16,120 125,65" fill="#E85A7A" stroke="#C8476A" stroke-width="2" stroke-linejoin="round"/>
+</svg>
