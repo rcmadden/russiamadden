@@ -57,3 +57,7 @@
 Initial release of Red Track/Blue Track Chart Maker
 
  [← Back to Units](units.html) | [Reference Chart](reference-chart.html)
+
+{% raw %}
+<script defer data-domain="russiamadden.com" src="https://plausible.io/js/script.js"></script>
+{% endraw %}
