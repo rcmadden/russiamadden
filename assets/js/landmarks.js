@@ -13,9 +13,12 @@
 //   <script src="./assets/js/landmarks-config.js"></script>
 //   <script src="./assets/js/landmarks.js"></script>
 
-// State
-let activeLandmark = null;
-let mirrorMode = true;
+(function(window) {
+  'use strict';
+
+  // State
+  let activeLandmark = null;
+  let mirrorMode = true;
 
 // Get SVG bounding box and convert SVG coords to page coords
 function svgToPageCoords(svgX, svgY) {
@@ -71,7 +74,7 @@ function renderLandmarks() {
   const symbol = landmarkDef.symbol;
   const cssClass = landmarkDef.class || '';
 
-  const note = window.ScalesModule?.degreeToNote(degree, scale);
+  const note = window.Scales.degreeToNote(degree, scale);
   if (!note) return;
 
   octList.forEach(oct => {
@@ -105,9 +108,11 @@ function setMirrorMode(enabled) {
   renderLandmarks();
 }
 
-// Export for use in page scripts
-window.LandmarksModule = {
-  render: renderLandmarks,
-  setActive: setActiveLandmark,
-  setMirrorMode: setMirrorMode
-};
+  // Export for use in page scripts
+  window.Landmarks = {
+    render: renderLandmarks,
+    setActive: setActiveLandmark,
+    setMirrorMode: setMirrorMode
+  };
+
+})(window);

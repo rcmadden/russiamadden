@@ -1,7 +1,10 @@
 // landmarks-config.js v0.1.0
 // Configuration for landmark characters and their placement rules
 
-window.LANDMARKS_CONFIG = {
+(function(window) {
+  'use strict';
+
+  window.LANDMARKS_CONFIG = {
   // Characters placed on specific scale degrees
   characters: {
     magician: {
@@ -118,4 +121,4 @@ window.LANDMARKS_CONFIG = {
   }
 };
 
-// Note: degreeToNote is now in scales.js - import from there
+})(window);
