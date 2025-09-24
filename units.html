@@ -65,6 +65,20 @@
     </div>
 
     <div class="dropdown">
+      <select id="landmarks-select" class="form-select" aria-label="Landmarks">
+        <option value="">Landmarks</option>
+        <option value="mk">MK Middle Key #4</option>
+      </select>
+    </div>
+
+    <div class="dropdown">
+      <select id="characters-select" class="form-select" aria-label="Characters">
+        <option value="">Characters</option>
+        <option value="magician">🎩 Magician #4</option>
+      </select>
+    </div>
+
+    <div class="dropdown">
       <!-- Position of "Unit 1 / Unit 2" text -->
       <select id="unit-label-pos" class="form-select" aria-label="Unit labels position">
         <option value="above" selected="">Unit Labels: Above</option>
@@ -75,6 +89,14 @@
 
     <button id="toggle-octaves" class="btn btn-form-style">Show Two Octaves</button>
     <button id="toggle-start" class="btn btn-form-style">Start on Unit 1</button>
+
+    <div class="dropdown">
+      <select id="settings-select" class="form-select" aria-label="Settings">
+        <option value="">⚙️ Settings</option>
+        <option value="mirror-on" selected>Mirror Mode: On</option>
+        <option value="mirror-off">Mirror Mode: Off</option>
+      </select>
+    </div>
     </div>
   </div>
 </header>
@@ -527,6 +549,154 @@
   // Default FREE-MODE starter: red track (C D E F# G# A#)
   ["C","D","E","F#","G#","A#"].forEach(n => manualOn.add(toFlat(n)));
   applyManualDots();
+</script>
+
+<!-- Bootstrap JS for dropdowns -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+<!-- Landmarks Module (inline for now - will extract later) -->
+<script>
+  // Landmarks config (will move to separate file when using proper server)
+  window.LANDMARKS_CONFIG = {
+    characters: {
+      magician: {
+        symbol: '🎩',
+        degree: '#4',
+        name: 'Magician'
+      }
+    },
+    landmarks: {
+      mk: {
+        symbol: 'MK',
+        degree: '#4',
+        name: 'Middle Key',
+        class: 'mk'
+      }
+    }
+  };
+</script>
+
+<script>
+  // Copy degreeToNote from scales.js (existing normalize pattern)
+  const SHARP_TO_FLAT_LANDMARK = {"C#":"Db","D#":"Eb","F#":"Gb","G#":"Ab","A#":"Bb"};
+  const normalizeLandmark = n => SHARP_TO_FLAT_LANDMARK[n] || n;
+
+  function degreeToNote(degree, tonic) {
+    const INTERVALS = {
+      '1': 0, 'b2': 1, '2': 2, 'b3': 3, '3': 4, '4': 5,
+      '#4': 6, 'b5': 6, '5': 7, '#5': 8, 'b6': 8, '6': 9,
+      'b7': 10, '7': 11
+    };
+
+    const normalizedTonic = normalizeLandmark(tonic);
+    const NOTES = ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
+    const tonicIndex = NOTES.indexOf(normalizedTonic);
+    const interval = INTERVALS[degree];
+
+    if (tonicIndex === -1 || interval === undefined) return null;
+    return NOTES[(tonicIndex + interval) % 12];
+  }
+
+  // Landmark state (mirror mode defaults to true, matching dot behavior)
+  let activeLandmark = null;
+  let landmarkMirrorMode = true;
+
+  function svgToPageCoords(svgX, svgY) {
+    const svg = document.getElementById('keyboard');
+    const pt = svg.createSVGPoint();
+    pt.x = svgX;
+    pt.y = svgY;
+    const transformed = pt.matrixTransform(svg.getScreenCTM());
+    return { x: transformed.x, y: transformed.y };
+  }
+
+  function getKeyPosition(note, oct) {
+    const localCxU1 = { C:40, D:120, E:200, Db:80, Eb:160 };
+    const localCxU2 = { F:40, G:120, A:200, B:280, Gb:80, Ab:160, Bb:240 };
+    const inU1 = n => ["C","D","E","Db","Eb"].includes(n);
+
+    const parseTx = tr => { const m=/translate\(([-\d.]+),/.exec(tr||""); return m?parseFloat(m[1]):0; };
+    const groupBase = oct => parseTx(document.getElementById(oct===1?"oct1":"oct2").getAttribute("transform"));
+    const unitTx = (oct,unit) => parseTx(document.getElementById(`oct${oct}-u${unit}`).getAttribute("transform"));
+
+    const unit = inU1(note) ? 1 : 2;
+    const x = groupBase(oct) + unitTx(oct, unit) + (unit===1 ? localCxU1[note] : localCxU2[note]);
+
+    const isBlack = note.includes('b') || note.includes('#');
+    const y = 60 + (isBlack ? 150 : 270);
+
+    return { x, y, isBlack };
+  }
+
+  function renderLandmarks() {
+    document.querySelectorAll('.landmark').forEach(el => el.remove());
+
+    if (!activeLandmark) return;
+
+    const scale = document.getElementById('scale-select').value;
+    if (!scale) return;
+
+    const showingTwo = document.getElementById('toggle-octaves').textContent.includes('One');
+    const octList = showingTwo ? [1,2] : [1];
+
+    const config = window.LANDMARKS_CONFIG;
+    if (!config) return;
+
+    let landmarkDef = config.landmarks[activeLandmark] || config.characters[activeLandmark];
+    if (!landmarkDef) return;
+
+    const degree = landmarkDef.degree;
+    const symbol = landmarkDef.symbol;
+    const cssClass = landmarkDef.class || '';
+
+    const note = degreeToNote(degree, scale);
+    if (!note) return;
+
+    octList.forEach(oct => {
+      const pos = getKeyPosition(note, oct);
+      const pageCoords = svgToPageCoords(pos.x, pos.y);
+      const landmarkY = pos.isBlack ? -90 : -50;
+
+      const landmark = document.createElement('div');
+      landmark.className = `landmark ${cssClass}`.trim();
+      landmark.textContent = symbol;
+      landmark.style.left = `${pageCoords.x}px`;
+      landmark.style.top = `${pageCoords.y + landmarkY}px`;
+      landmark.setAttribute('data-landmark', activeLandmark);
+      landmark.setAttribute('data-note', note);
+      landmark.setAttribute('data-octave', oct);
+
+      document.body.appendChild(landmark);
+    });
+  }
+
+  // Wire up landmarks dropdown
+  document.getElementById('landmarks-select')?.addEventListener('change', (e) => {
+    activeLandmark = e.target.value || null;
+    renderLandmarks();
+  });
+
+  // Wire up characters dropdown
+  document.getElementById('characters-select')?.addEventListener('change', (e) => {
+    activeLandmark = e.target.value || null;
+    renderLandmarks();
+  });
+
+  // Wire up settings dropdown (mirror mode matches dot behavior)
+  document.getElementById('settings-select')?.addEventListener('change', (e) => {
+    landmarkMirrorMode = e.target.value === 'mirror-on';
+    renderLandmarks();
+  });
+
+  // Re-render landmarks when scale/layout changes
+  document.getElementById('scale-select')?.addEventListener('change', renderLandmarks);
+  document.getElementById('toggle-octaves')?.addEventListener('click', () => {
+    setTimeout(renderLandmarks, 50);
+  });
+  document.getElementById('toggle-start')?.addEventListener('click', () => {
+    setTimeout(renderLandmarks, 50);
+  });
+  window.addEventListener('resize', renderLandmarks);
 </script>
 
 

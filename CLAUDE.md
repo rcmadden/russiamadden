@@ -185,12 +185,46 @@ refactor: consolidate mobile spacing in helper.css
 
 **Critical**: Maintain `noteLabelWithUnitBelowOffset: 28` for proper spacing (verified Sep 2025)
 
+## Landmarks & Characters Architecture
+
+### Module Separation of Concerns
+**CRITICAL**: Never duplicate music theory logic. Always use existing functions.
+
+**File Structure:**
+```
+/assets/js/
+├── scales.js              # Music theory (SINGLE SOURCE OF TRUTH)
+│   ├── normalize()/toFlat()     # Enharmonic normalization
+│   ├── prefersSharps()          # Key signature logic
+│   ├── displayName()            # Unicode display
+│   └── degreeToNote()           # Scale degree → note mapping
+├── landmarks-config.js    # Declarative config (what exists)
+└── landmarks.js          # Rendering logic (how to display)
+```
+
+**Design Principles:**
+1. **Don't break working code** - Copy first, extract later
+2. **Use existing patterns** - Mirror mode already exists for dots, reuse it
+3. **No duplicate logic** - If it's in scales.js, import it
+4. **Modular & extensible** - Add landmarks in config only
+
+**Current Implementation:**
+- Landmarks use `<select>` dropdowns (consistent with existing UI)
+- Mirror mode defaults ON (matches dot behavior)
+- Single octave mode available when mirror toggled OFF
+- HTML overlays positioned absolutely over SVG keys
+
+**When Adding Features:**
+- Check existing code for similar patterns
+- Reuse, don't rewrite
+- Test that nothing breaks before adding new functionality
+
 ## Learning Resources
 - Bootstrap 5 utilities: https://getbootstrap.com/docs/5.1/utilities/
-- SVG coordinate system: https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial
+- SVG coordinate system: https://developer.mozilla.org/en-docs/Web/SVG/Tutorial
 - Git workflow: Feature branches → PR → master
 
 ---
 
-**Last Updated**: September 22, 2025
+**Last Updated**: September 23, 2025
 **Project Version**: 0.0.5

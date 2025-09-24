@@ -462,5 +462,17 @@
   // Initial generation
   generateChart();
 </script>
+<script type="module">
+  import { createKeyboardAPI } from './assets/js/keyboard-renderer.js';
+
+  const kb = createKeyboardAPI(document.getElementById('keyboard'), {
+    octaves: 2,
+    startOnUnit: 1,
+    mode: 'major'
+  });
+
+  kb.redraw();
+</script>
+
 </body>
 </html>
