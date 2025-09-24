@@ -1,36 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
+<html lang="en"><head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Units</title>
-<script defer data-domain="russiamadden.com" src="https://plausible.io/js/script.js"></script>
+<script defer="" data-domain="russiamadden.com" src="https://plausible.io/js/script.js"></script>
 <!-- Bootstrap CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 <link rel="stylesheet" href="./helper.css">
 
 <!-- Open Graph / Facebook -->
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://russiamadden.com/units.html" />
-<meta property="og:title" content="Red Track/Blue Track Chart Maker" />
-<meta property="og:description" content="Interactive music theory tool for creating red track and blue track charts with customizable keys and labels" />
-<meta property="og:image" content="https://russiamadden.com/assets/img/units-preview.png" />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://russiamadden.com/units.html">
+<meta property="og:title" content="Red Track/Blue Track Chart Maker">
+<meta property="og:description" content="Interactive music theory tool for creating red track and blue track charts with customizable keys and labels">
+<meta property="og:image" content="https://russiamadden.com/assets/img/units-preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 
 <!-- Twitter -->
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:url" content="https://russiamadden.com/units.html" />
-<meta name="twitter:title" content="Red Track/Blue Track Chart Maker" />
-<meta name="twitter:description" content="Interactive music theory tool for creating red track and blue track charts" />
-<meta name="twitter:image" content="https://russiamadden.com/assets/img/units-preview.png" />
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://russiamadden.com/units.html">
+<meta name="twitter:title" content="Red Track/Blue Track Chart Maker">
+<meta name="twitter:description" content="Interactive music theory tool for creating red track and blue track charts">
+<meta name="twitter:image" content="https://russiamadden.com/assets/img/units-preview.png">
 
 </head>
 <body class="main"> 
 <header class="bg-white mx-n3 px-3 ">
   <div class="header-row-1 d-flex flex-column align-items-start py-2 gap-1">
     <div class="d-flex justify-content-between w-100">
-      <span class="navbar-brand mb-0 h1">Russia Madden<a href="projects.html" class="text-link"> > Projects</a></span>
+      <span class="navbar-brand mb-0 h1">Russia Madden<a href="projects.html" class="text-link"> &gt; Projects</a></span>
       <a href="reference-chart.html">12 KeyChart</a>
     </div>
     <h1>Red Track/Blue Track Chart Maker</h1>
@@ -69,14 +67,14 @@
     <div class="dropdown">
       <!-- Position of "Unit 1 / Unit 2" text -->
       <select id="unit-label-pos" class="form-select" aria-label="Unit labels position">
-        <option value="above" selected>Unit Labels: Above</option>
+        <option value="above" selected="">Unit Labels: Above</option>
         <option value="below">Unit Labels: Below</option>
         <option value="hidden">Unit Labels: Hidden</option>
       </select>
     </div>
 
-    <button id="toggle-octaves"  class="btn btn-form-style">Show Two Octaves</button>
-    <button id="toggle-start"    class="btn btn-form-style">Start on Unit 1</button>
+    <button id="toggle-octaves" class="btn btn-form-style">Show Two Octaves</button>
+    <button id="toggle-start" class="btn btn-form-style">Start on Unit 1</button>
     </div>
   </div>
 </header>
@@ -84,14 +82,14 @@
   NOTE: "Unit 1 / Unit 2" texts live OUTSIDE the key groups so we can freely
   reposition them and hide Octave 2 labels in single-octave mode without touching the keys.
 -->
-<svg class="px-3"id="keyboard" viewBox="0 0 1160 450" xmlns="http://www.w3.org/2000/svg" aria-label="Units keyboard">
+<svg class="px-3" id="keyboard" viewBox="0 0 1160 450" xmlns="http://www.w3.org/2000/svg" aria-label="Units keyboard">
 
   <!-- ===== OCTAVE 1 ===== -->
   <text id="oct1-title" class="octave-label" x="280" y="44">Octave 1</text>
 
   <!-- Unit labels for Octave 1 -->
-  <text id="oct1-left-label"  class="unit-label" x="120" y="412">Unit 1</text>
-  <text id="oct1-right-label" class="unit-label" x="400" y="412">Unit 2</text>
+  <text id="oct1-left-label" class="unit-label" x="120" y="54" style="display: inline;">Unit 1</text>
+  <text id="oct1-right-label" class="unit-label" x="400" y="54" style="display: inline;">Unit 2</text>
 
   <!-- Keys (translateY = 60; white height = 300 => bottom = 360) -->
   <g id="oct1" data-octave="1" transform="translate(0,60)">
@@ -99,77 +97,77 @@
     <!-- Unit 1: C-D-E -->
     <g id="oct1-u1" data-unit="1" transform="translate(0,0)">
       <!-- White keys -->
-      <rect x="0" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"/>
-      <rect x="80" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"/>
-      <rect x="160" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"/>
+      <rect x="0" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"></rect>
+      <rect x="80" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"></rect>
+      <rect x="160" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"></rect>
       <!-- Black keys -->
-      <rect x="55" y="0" width="50" height="180" fill="black"/>
-      <rect x="135" y="0" width="50" height="180" fill="black"/>
+      <rect x="55" y="0" width="50" height="180" fill="black"></rect>
+      <rect x="135" y="0" width="50" height="180" fill="black"></rect>
       <!-- Dots (tracks) -->
-      <circle class="dot white-dot" cx="40"  cy="270" r="18" data-key="C"  data-track="red"/>
-      <circle class="dot white-dot" cx="120" cy="270" r="18" data-key="D"  data-track="red"/>
-      <circle class="dot white-dot" cx="200" cy="270" r="18" data-key="E"  data-track="red"/>
-      <circle class="dot black-dot" cx="80"  cy="150" r="18" data-key="Db" data-track="blue"/>
-      <circle class="dot black-dot" cx="160" cy="150" r="18" data-key="Eb" data-track="blue"/>
+      <circle class="dot white-dot" cx="40" cy="270" r="18" data-key="C" data-track="red" data-octave="1"></circle>
+      <circle class="dot white-dot" cx="120" cy="270" r="18" data-key="D" data-track="red" data-octave="1"></circle>
+      <circle class="dot white-dot" cx="200" cy="270" r="18" data-key="E" data-track="red" data-octave="1"></circle>
+      <circle class="dot black-dot hidden" cx="80" cy="150" r="18" data-key="Db" data-track="blue" data-octave="1"></circle>
+      <circle class="dot black-dot hidden" cx="160" cy="150" r="18" data-key="Eb" data-track="blue" data-octave="1"></circle>
     </g>
 
     <!-- Unit 2: F-G-A-B -->
     <g id="oct1-u2" data-unit="2" transform="translate(240,0)">
       <!-- White keys -->
-      <rect x="0"   y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"/>
-      <rect x="80"  y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"/>
-      <rect x="160" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"/>
-      <rect x="240" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"/>
+      <rect x="0" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"></rect>
+      <rect x="80" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"></rect>
+      <rect x="160" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"></rect>
+      <rect x="240" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"></rect>
       <!-- Black keys -->
-      <rect x="55" y="0" width="50" height="180" fill="black"/>
-      <rect x="135" y="0" width="50" height="180" fill="black"/>
-      <rect x="215" y="0" width="50" height="180" fill="black"/>
+      <rect x="55" y="0" width="50" height="180" fill="black"></rect>
+      <rect x="135" y="0" width="50" height="180" fill="black"></rect>
+      <rect x="215" y="0" width="50" height="180" fill="black"></rect>
       <!-- Dots (tracks) -->
-      <circle class="dot white-dot" cx="40"  cy="270" r="18" data-key="F"  data-track="blue"/>
-      <circle class="dot white-dot" cx="120" cy="270" r="18" data-key="G"  data-track="blue"/>
-      <circle class="dot white-dot" cx="200" cy="270" r="18" data-key="A"  data-track="blue"/>
-      <circle class="dot white-dot" cx="280" cy="270" r="18" data-key="B"  data-track="blue"/>
-      <circle class="dot black-dot" cx="80"  cy="150" r="18" data-key="Gb" data-track="red"/>
-      <circle class="dot black-dot" cx="160" cy="150" r="18" data-key="Ab" data-track="red"/>
-      <circle class="dot black-dot" cx="240" cy="150" r="18" data-key="Bb" data-track="red"/>
+      <circle class="dot white-dot hidden" cx="40" cy="270" r="18" data-key="F" data-track="blue" data-octave="1"></circle>
+      <circle class="dot white-dot hidden" cx="120" cy="270" r="18" data-key="G" data-track="blue" data-octave="1"></circle>
+      <circle class="dot white-dot hidden" cx="200" cy="270" r="18" data-key="A" data-track="blue" data-octave="1"></circle>
+      <circle class="dot white-dot hidden" cx="280" cy="270" r="18" data-key="B" data-track="blue" data-octave="1"></circle>
+      <circle class="dot black-dot" cx="80" cy="150" r="18" data-key="Gb" data-track="red" data-octave="1"></circle>
+      <circle class="dot black-dot" cx="160" cy="150" r="18" data-key="Ab" data-track="red" data-octave="1"></circle>
+      <circle class="dot black-dot" cx="240" cy="150" r="18" data-key="Bb" data-track="red" data-octave="1"></circle>
     </g>
   </g>
 
   <!-- ===== OCTAVE 2 ===== -->
   <text id="oct2-title" class="octave-label" x="840" y="44">Octave 2</text>
-  <text id="oct2-left-label"  class="unit-label" x="680" y="412">Unit 1</text>
-  <text id="oct2-right-label" class="unit-label" x="960" y="412">Unit 2</text>
+  <text id="oct2-left-label" class="unit-label" x="680" y="54" style="display: inline;">Unit 1</text>
+  <text id="oct2-right-label" class="unit-label" x="960" y="54" style="display: inline;">Unit 2</text>
 
   <g id="oct2" data-octave="2" transform="translate(560,60)">
     <!-- Unit 1 -->
     <g id="oct2-u1" data-unit="1" transform="translate(0,0)">
-      <rect x="0" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"/>
-      <rect x="80" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"/>
-      <rect x="160" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"/>
-      <rect x="55" y="0" width="50" height="180" fill="black"/>
-      <rect x="135" y="0" width="50" height="180" fill="black"/>
-      <circle class="dot white-dot" cx="40"  cy="270" r="18" data-key="C"  data-track="red"/>
-      <circle class="dot white-dot" cx="120" cy="270" r="18" data-key="D"  data-track="red"/>
-      <circle class="dot white-dot" cx="200" cy="270" r="18" data-key="E"  data-track="red"/>
-      <circle class="dot black-dot" cx="80"  cy="150" r="18" data-key="Db" data-track="blue"/>
-      <circle class="dot black-dot" cx="160" cy="150" r="18" data-key="Eb" data-track="blue"/>
+      <rect x="0" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"></rect>
+      <rect x="80" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"></rect>
+      <rect x="160" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"></rect>
+      <rect x="55" y="0" width="50" height="180" fill="black"></rect>
+      <rect x="135" y="0" width="50" height="180" fill="black"></rect>
+      <circle class="dot white-dot" cx="40" cy="270" r="18" data-key="C" data-track="red" data-octave="1"></circle>
+      <circle class="dot white-dot" cx="120" cy="270" r="18" data-key="D" data-track="red" data-octave="1"></circle>
+      <circle class="dot white-dot" cx="200" cy="270" r="18" data-key="E" data-track="red" data-octave="1"></circle>
+      <circle class="dot black-dot hidden" cx="80" cy="150" r="18" data-key="Db" data-track="blue" data-octave="1"></circle>
+      <circle class="dot black-dot hidden" cx="160" cy="150" r="18" data-key="Eb" data-track="blue" data-octave="1"></circle>
     </g>
     <!-- Unit 2 -->
     <g id="oct2-u2" data-unit="2" transform="translate(240,0)">
-      <rect x="0"   y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"/>
-      <rect x="80"  y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"/>
-      <rect x="160" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"/>
-      <rect x="240" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"/>
-      <rect x="55" y="0" width="50" height="180" fill="black"/>
-      <rect x="135" y="0" width="50" height="180" fill="black"/>
-      <rect x="215" y="0" width="50" height="180" fill="black"/>
-      <circle class="dot white-dot" cx="40"  cy="270" r="18" data-key="F"  data-track="blue"/>
-      <circle class="dot white-dot" cx="120" cy="270" r="18" data-key="G"  data-track="blue"/>
-      <circle class="dot white-dot" cx="200" cy="270" r="18" data-key="A"  data-track="blue"/>
-      <circle class="dot white-dot" cx="280" cy="270" r="18" data-key="B"  data-track="blue"/>
-      <circle class="dot black-dot" cx="80"  cy="150" r="18" data-key="Gb" data-track="red"/>
-      <circle class="dot black-dot" cx="160" cy="150" r="18" data-key="Ab" data-track="red"/>
-      <circle class="dot black-dot" cx="240" cy="150" r="18" data-key="Bb" data-track="red"/>
+      <rect x="0" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"></rect>
+      <rect x="80" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"></rect>
+      <rect x="160" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"></rect>
+      <rect x="240" y="0" width="80" height="300" fill="white" stroke="black" stroke-width="4"></rect>
+      <rect x="55" y="0" width="50" height="180" fill="black"></rect>
+      <rect x="135" y="0" width="50" height="180" fill="black"></rect>
+      <rect x="215" y="0" width="50" height="180" fill="black"></rect>
+      <circle class="dot white-dot hidden" cx="40" cy="270" r="18" data-key="F" data-track="blue" data-octave="1"></circle>
+      <circle class="dot white-dot hidden" cx="120" cy="270" r="18" data-key="G" data-track="blue" data-octave="1"></circle>
+      <circle class="dot white-dot hidden" cx="200" cy="270" r="18" data-key="A" data-track="blue" data-octave="1"></circle>
+      <circle class="dot white-dot hidden" cx="280" cy="270" r="18" data-key="B" data-track="blue" data-octave="1"></circle>
+      <circle class="dot black-dot" cx="80" cy="150" r="18" data-key="Gb" data-track="red" data-octave="1"></circle>
+      <circle class="dot black-dot" cx="160" cy="150" r="18" data-key="Ab" data-track="red" data-octave="1"></circle>
+      <circle class="dot black-dot" cx="240" cy="150" r="18" data-key="Bb" data-track="red" data-octave="1"></circle>
     </g>
   </g>
 
@@ -531,5 +529,6 @@
   applyManualDots();
 </script>
 
-</body>
-</html>
+
+
+</body></html>
