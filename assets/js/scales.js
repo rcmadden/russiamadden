@@ -1,8 +1,17 @@
 // scales.js v0.1.0
-// Shared music theory functions (non-module for file:// compatibility)
+// ---------------------------------------
+// Purpose: encapsulate scale/degree logic so renderer can remain UI-only
+// Responsibilities:
+//  - Track/set Home ("1")
+//  - Map KeyId -> scale degree (relative to Home)
+//  - Respect existing enharmonic spelling
+//  - Shared music theory functions for all charts
 
 (function(window) {
   'use strict';
+
+  // State: Track Home key for degree calculations
+  let homeKeyId = null; // e.g., "C", "Gb"
 
   /* =============================================================================
       Enharmonics / naming helpers
@@ -26,7 +35,28 @@
     return result;
   }
 
-  // Map scale degree to note given a tonic (used by landmarks)
+  /* =============================================================================
+      Home tracking (for future "first tap sets 1" feature)
+      ============================================================================= */
+  function setHome(keyId) {
+    homeKeyId = keyId;
+  }
+
+  function getHome() {
+    return homeKeyId;
+  }
+
+  function degreeOf(keyId, mode = "major") {
+    if (!homeKeyId) return null;
+    // TODO: Calculate degree of keyId relative to homeKeyId
+    // This will be used when "first tap sets 1" is implemented
+    if (normalize(keyId) === normalize(homeKeyId)) return "1";
+    return "?";
+  }
+
+  /* =============================================================================
+      Scale degree to note mapping (for landmarks)
+      ============================================================================= */
   function degreeToNote(degree, tonic) {
     const INTERVALS = {
       '1': 0, 'b2': 1, '2': 2, 'b3': 3, '3': 4, '4': 5,
@@ -46,10 +76,16 @@
 
   // Expose to window for shared use
   window.Scales = {
+    // Enharmonic helpers
     toFlat,
     normalize,
     prefersSharps,
     displayName,
+    // Home tracking
+    setHome,
+    getHome,
+    degreeOf,
+    // Degree mapping
     degreeToNote
   };
 
