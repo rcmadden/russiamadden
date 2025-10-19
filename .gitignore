@@ -3,3 +3,4 @@ clone_site/
 .idea/
 .DS_Store
 .vscode/
+.venv/
