@@ -1,6 +1,10 @@
 # Release Notes: Red Track/Blue Track Chart Maker
   [← Back to Units](units.html)
 
+## Version 0.0.6 - (Octorber 19, 2025)
+- **About Red Track/Blue Track** - 
+Add about page, newsletter highligt and instructor video demo.
+
 ## Version 0.0.5 - (September 22, 2025)
 - **Units Notes label alignment** - Fixed labels to display below keys when units below selected.
 
