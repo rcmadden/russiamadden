@@ -626,23 +626,36 @@
         // Follow the musical direction across the displayed octave boundary.
         if (direction > 0 && toLocalX < fromLocalX) targetOct += 1;
         if (direction < 0 && toLocalX > fromLocalX) targetOct -= 1;
-        if (targetOct < 1 || targetOct > octaves) return;
+        const wrapsSingleOctave = octaves === 1 && (targetOct < 1 || targetOct > octaves);
+        if (!wrapsSingleOctave && (targetOct < 1 || targetOct > octaves)) return;
+        if (wrapsSingleOctave) targetOct = oct;
 
         const x2 = getXForNote(toNote, targetOct);
         if (x1 === x2) return;
         const y = GEOM.groupY + GEOM.whiteH - 8; // just under the dots, inside the keys
-        const dir = x2 > x1 ? 1 : -1;
+        const dir = wrapsSingleOctave ? direction : (x2 > x1 ? 1 : -1);
 
-        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        line.setAttribute("x1", x1);
-        line.setAttribute("y1", y);
-        line.setAttribute("x2", x2 - dir * 8);
-        line.setAttribute("y2", y);
-        line.setAttribute("stroke", color);
-        line.setAttribute("stroke-width", "2.5");
-        svg.appendChild(line);
+        const appendLine = (startX, endX) => {
+          const line = document.createElementNS(SVG_NS, "line");
+          line.setAttribute("x1", startX);
+          line.setAttribute("y1", y);
+          line.setAttribute("x2", endX);
+          line.setAttribute("y2", y);
+          line.setAttribute("stroke", color);
+          line.setAttribute("stroke-width", "2.5");
+          svg.appendChild(line);
+        };
 
-        const head = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+        if (wrapsSingleOctave) {
+          const outgoingEdge = direction > 0 ? 350 : 0;
+          const incomingEdge = direction > 0 ? 0 : 350;
+          appendLine(x1, outgoingEdge);
+          appendLine(incomingEdge, x2 - dir * 8);
+        } else {
+          appendLine(x1, x2 - dir * 8);
+        }
+
+        const head = document.createElementNS(SVG_NS, "polygon");
         head.setAttribute("points", `${x2},${y} ${x2 - dir * 9},${y - 5} ${x2 - dir * 9},${y + 5}`);
         head.setAttribute("fill", color);
         svg.appendChild(head);
