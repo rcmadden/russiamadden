@@ -201,7 +201,7 @@ This project visualizes a music curriculum called **popMATICS** (Tony's framewor
 
 **Fixed landmarks** (same physical keys in every chart, never move with the key):
 - **Borders 🚩** — first & last white key of each Unit (Unit 1: C, E — red; Unit 2: F, B — blue). Rendered as SVG flags, not emoji. Grey/ghost (white fill, grey outline) when the key is not in the current Landscape's Path.
-- **Center Stage (green SVG star)** — center key of each Unit (Unit 1: D; Unit 2: A♭). Rendered in `#2EAE4F`, matching Tony's hand drawings. Only two of these exist. Never represent Center Stage with the yellow `⭐` emoji.
+- **Center Stage (green SVG star)** — center key of each Unit (Unit 1: D; Unit 2: A♭). Rendered in `#2EAE4F`, matching Tony's hand drawings. Two of these exist per landscape.
 
 **Landscape-relative markers** (calculated from whichever key/Camp the chart is currently showing):
 - **Camp ⛺ / Fire 🔥** — scale degrees 1 and 3.
