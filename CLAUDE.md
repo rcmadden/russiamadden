@@ -194,3 +194,51 @@ refactor: consolidate mobile spacing in helper.css
 
 **Last Updated**: September 22, 2025
 **Project Version**: 0.0.5
+
+## popMATICS Domain Vocabulary
+
+This project visualizes a music curriculum called **popMATICS** (Tony's framework). Reference-chart.html and units.html render its concepts as overlays on piano keyboard SVGs. Use this vocabulary — do not substitute conventional music theory terms unless asked.
+
+**Fixed landmarks** (same physical keys in every chart, never move with the key):
+- **Borders 🚩** — first & last white key of each Unit (Unit 1: C, E — red; Unit 2: F, B — blue). Rendered as SVG flags, not emoji. Grey/ghost (white fill, grey outline) when the key is not in the current Landscape's Path.
+- **Center Stage ⭐** — center key of each Unit (Unit 1: D; Unit 2: A♭). Rendered as a green star, matching Tony's hand drawings. Only two of these exist — do not confuse with Center Stages of the Path below.
+
+**Landscape-relative markers** (calculated from whichever key/Camp the chart is currently showing):
+- **Camp ⛺ / Fire 🔥** — scale degrees 1 and 3.
+- **Middle Key 🔑** — the ♭5, tritone from Camp.
+- **Center Stages 🌟 (Path)** — scale degrees 4 and 7, the two tension points that demand resolution. Distinct from the fixed Center Stage landmark above; both use a star but different colors/rendering (🌟 vs the green fixed star) to keep them visually separate.
+  - **Suspension** = degree 4, resolves down to Fire (3).
+  - **Leading Tone** = degree 7, resolves up to Camp (1).
+  - Resolution arrows are optional (toggle: "Show resolution arrows") — turning them off keeps the star + role marker but hides the arrow.
+
+**Characters** (chromatic scale degrees, relative to Camp):
+- Architect ♭2, Author ♭3, Magician ♯4, King/Queen ♭6 (one marker — King and Queen are the same piano key, enharmonically ♭6/♯5), Traveler ♭7.
+
+## Track Colors (Tony's palette — not the old pink/blue)
+
+```
+--track-red:  #E02424   /* Red Track dots, Unit 1 border flags */
+--track-blue: #1E90FF   /* Blue Track dots, Unit 2 border flags */
+--track-grey: #C4C4C4   /* ghost/inactive border flags, off-Path landmarks */
+```
+The old scheme (`#ff69b4` pink) is deprecated. If you find pink anywhere, it's stale — replace with `--track-red`.
+
+**Track ≠ Unit — do not conflate these.** Unit border-flag color and physical key Track membership are two separate systems: Unit 1 has red border flags, but its black keys run on **Blue** Track. Unit 2 has blue border flags, but its black keys run on **Red** Track. This has been a repeated source of bugs — double-check which system a given piece of logic is actually keying off of.
+
+## Landmark & Character Rendering System (reference-chart.html)
+
+Landmarks are defined once in the `LANDMARK_MARKERS` array and rendered by `addMarkersToChart()`. To add a new landmark or Character:
+
+1. Add an entry to `LANDMARK_MARKERS` with `id`, `type` (`"fixed"` or `"relative"`), and `points`.
+   - `type: "fixed"` points use `{note, emoji}` or `{note, shape}` — same key in every chart.
+   - `type: "relative"` points use `{semis, emoji}` or `{semis, shape}` — semitones above Camp, recalculated per key via `noteFromCamp(key, semis)`.
+   - Optional `arrow: {fromSemis, toSemis, color}` draws a resolution arrow between two relative points (gated behind the `showArrows` toggle).
+2. Add a matching checkbox in `#landmarks-menu`, grouped under the right `.lm-group` (Fixed Landmarks / On the Landscape / Center Stages / Characters).
+3. Musical symbols in labels must be literal Unicode (♭ ♯), not HTML entities — matches the existing `displayName()` convention.
+4. Shapes (`"flag"`, `"star"`) are hand-drawn SVG, not emoji — use this for anything that needs Tony's-drawing-accurate rendering (colors, ghosting) rather than a Unicode glyph.
+
+Markers dedupe per key (e.g., if Camp is reached via two different selected landmarks, it only renders once) and stack vertically when multiple markers land on the same key.
+
+## Known Gaps / Not Yet Ported to units.html
+
+The Landmarks & Characters dropdown currently exists only in reference-chart.html. Per the "Consistency" rule above, this should eventually be ported to units.html — flagged here so it isn't lost track of, not yet scheduled.

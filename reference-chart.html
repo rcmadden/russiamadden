@@ -30,6 +30,11 @@
   /* =============================
      Chart Layout Styles
      ============================= */
+  /* New track colors — red/blue replaces the old pink/blue.
+     These override helper.css; move them there to apply site-wide. */
+  .dot[data-track="red"]  { fill: #E02424 !important; stroke: #E02424 !important; }
+  .dot[data-track="blue"] { fill: #1E90FF !important; stroke: #1E90FF !important; }
+
   .chart-container {
     padding: 20px;
     background: white;
@@ -106,23 +111,107 @@
     user-select: none;
   }
 
+  /* =============================
+     Landmarks & Characters dropdown
+     ============================= */
+  .landmarks-dropdown {
+    position: relative;
+  }
+
+  #landmarks-btn {
+    min-width: 230px;
+    cursor: pointer;
+  }
+
+  .landmarks-menu {
+    position: fixed; /* escapes the horizontally-scrolling .controls bar */
+    z-index: 2000;
+    background: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(0,0,0,.12);
+    padding: 10px 14px;
+    min-width: 260px;
+    max-width: calc(100vw - 20px);
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+  .lm-group {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: #888;
+    margin: 10px 0 4px;
+  }
+
+  .lm-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    margin: 0;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .lm-all {
+    font-weight: 600;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+  }
+
+  .lm-option {
+    color: #666;
+    font-size: 14px;
+    border-top: 1px dashed #eee;
+    margin-top: 4px;
+    padding-top: 8px;
+  }
+
+  .site-logo {
+    height: 34px;
+    width: auto;
+    flex-shrink: 0;
+  }
+
+  .landmark-marker {
+    font-size: 15px;
+    text-anchor: middle;
+    user-select: none;
+  }
+
 </style>
 </head>
 <body class="main"> 
 <header class="bg-white mx-n3 px-3 ">
-  <!-- <div class="header-row-1 d-flex flex-column align-items-start py-2 gap-1">
-    <span class="navbar-brand mb-0 h1">Russia Madden<a href="units.html" class="text-link text-primary"> > Units</a></span>
-    <h1>Units Reference Chart</h1>
-      <span class="mb-0">
-        <a href="reference-chart.html" class="text-primary">About</a>
-      </span>
-  </div> -->
   <div class="header-row-1 d-flex flex-column align-items-start py-2 gap-1">
     <div class="d-flex justify-content-between w-100">
       <span class="navbar-brand mb-0 h1">Russia Madden<a href="units.html" class="text-link text-primary"> > Units</a></span>
     </div>
     <div class="d-flex justify-content-between w-100">
-      <h1>Units Reference Chart</h1>
+      <div class="d-flex align-items-center" style="gap:10px; min-width:0;">
+        <svg class="site-logo" viewBox="0 0 152 62" aria-hidden="true">
+          <rect x="2" y="2" width="60" height="56" fill="white" stroke="#111" stroke-width="2.5"/>
+          <rect x="68" y="2" width="80" height="56" fill="white" stroke="#111" stroke-width="2.5"/>
+          <rect x="15" y="2" width="11" height="30" fill="#111"/>
+          <rect x="36" y="2" width="11" height="30" fill="#111"/>
+          <rect x="81" y="2" width="11" height="30" fill="#111"/>
+          <rect x="101" y="2" width="11" height="30" fill="#111"/>
+          <rect x="121" y="2" width="11" height="30" fill="#111"/>
+          <polyline points="12,46 32,46 52,46 86.5,20 106.5,20 126.5,20" fill="none" stroke="#E02424" stroke-width="3.5"/>
+          <polyline points="20.5,20 41.5,20 78,46 98,46 118,46 138,46" fill="none" stroke="#1E90FF" stroke-width="3.5"/>
+          <g fill="#E02424">
+            <circle cx="12" cy="46" r="5"/><circle cx="32" cy="46" r="5"/><circle cx="52" cy="46" r="5"/>
+            <circle cx="86.5" cy="20" r="5"/><circle cx="106.5" cy="20" r="5"/><circle cx="126.5" cy="20" r="5"/>
+          </g>
+          <g fill="#1E90FF">
+            <circle cx="20.5" cy="20" r="5"/><circle cx="41.5" cy="20" r="5"/>
+            <circle cx="78" cy="46" r="5"/><circle cx="98" cy="46" r="5"/><circle cx="118" cy="46" r="5"/><circle cx="138" cy="46" r="5"/>
+          </g>
+        </svg>
+        <h1>Units Reference Chart</h1>
+      </div>
       <span class="mb-0">
         <a href="about_red_track_blue_track.html" class="text-primary">About</a>
       </span>
@@ -145,6 +234,33 @@
         <option value="below">Unit Labels: Below</option>
         <option value="hidden">Unit Labels: Hidden</option>
       </select>
+    </div>
+
+    <div class="dropdown landmarks-dropdown">
+      <button id="landmarks-btn" class="form-select text-start" type="button" aria-haspopup="true" aria-expanded="false">Landmarks &amp; Characters</button>
+      <div id="landmarks-menu" class="landmarks-menu" hidden>
+        <label class="lm-item lm-all"><input type="checkbox" id="lm-select-all"> Select All</label>
+
+        <div class="lm-group">Fixed Landmarks</div>
+        <label class="lm-item"><input type="checkbox" class="lm-check" value="borders"> &#128681; Borders</label>
+        <label class="lm-item"><input type="checkbox" class="lm-check" value="centerstage"> &#11088; Center Stage</label>
+
+        <div class="lm-group">On the Landscape</div>
+        <label class="lm-item"><input type="checkbox" class="lm-check" value="campfire"> &#9978; Camp &amp; &#128293; Fire (1 &amp; 3)</label>
+        <label class="lm-item"><input type="checkbox" class="lm-check" value="middlekey"> &#128273; Middle Key (♭5)</label>
+
+        <div class="lm-group">Center Stages &#127775; (4 &amp; 7)</div>
+        <label class="lm-item"><input type="checkbox" class="lm-check" value="suspension"> &#9208;&#65039; Suspension (4) &#8594; &#128293; Fire</label>
+        <label class="lm-item"><input type="checkbox" class="lm-check" value="leadingtone"> &#127908; Leading Tone (7) &#8594; &#9978; Camp</label>
+        <label class="lm-item lm-option"><input type="checkbox" id="lm-arrows" checked> Show resolution arrows</label>
+
+        <div class="lm-group">Characters</div>
+        <label class="lm-item"><input type="checkbox" class="lm-check" value="architect"> &#128207; Architect (♭2)</label>
+        <label class="lm-item"><input type="checkbox" class="lm-check" value="author"> &#9997;&#65039; Author (♭3)</label>
+        <label class="lm-item"><input type="checkbox" class="lm-check" value="magician"> &#127913; Magician (♯4)</label>
+        <label class="lm-item"><input type="checkbox" class="lm-check" value="kingqueen"> &#129333; King / &#128120; Queen (♭6)</label>
+        <label class="lm-item"><input type="checkbox" class="lm-check" value="traveler"> &#129523; Traveler (♭7)</label>
+      </div>
     </div>
 
     <button id="toggle-octaves" class="btn btn-form-style">Show Two Octaves</button>
@@ -206,7 +322,7 @@
     if (!preferSharpsFlag) 
       return norm.replace('#', '♯').replace('b', '♭');
     const FLAT_TO_SHARP = {"Db":"C#","Eb":"D#","Gb":"F#","Ab":"G#","Bb":"A#"};
-    let = result = FLAT_TO_SHARP[norm] || norm;
+    let result = FLAT_TO_SHARP[norm] || norm;
      // Replace # and b with musical symbols
     result = result.replace('#', '♯').replace('b', '♭');
     return result;
@@ -232,12 +348,61 @@
   // Key order for the chart
   const KEY_ORDER = ["C", "G", "D", "A", "E", "B", "Gb", "Db", "Ab", "Eb", "Bb", "F"];
 
+  /* =============================================================================
+     Landmarks & Characters
+     - Fixed landmarks live on physical keys and never move.
+     - Landscape markers and Characters are measured from Camp (the chart's key),
+       in semitones ("Wave steps") above Camp.
+     ============================================================================= */
+  const PITCH_CLASS = {"C":0,"Db":1,"D":2,"Eb":3,"E":4,"F":5,"Gb":6,"G":7,"Ab":8,"A":9,"Bb":10,"B":11};
+  const PC_NAMES = ["C","Db","D","Eb","E","F","Gb","G","Ab","A","Bb","B"];
+  const BLACK_KEYS = ["Db","Eb","Gb","Ab","Bb"];
+  const SVG_NS = "http://www.w3.org/2000/svg";
+  const TRACK_COLORS = { red: "#E02424", blue: "#1E90FF", grey: "#C4C4C4" };
+  const noteFromCamp = (key, semis) => PC_NAMES[(PITCH_CLASS[normalize(key)] + semis) % 12];
+
+  const LANDMARK_MARKERS = [
+    // Fixed landmarks. Border flags follow Tony's drawings:
+    // red flags for Unit 1 (C, E), blue flags for Unit 2 (F, B),
+    // greyed out when that key is not on the Path of the chart's Landscape.
+    { id: "borders",     type: "fixed",
+      points: [ {note:"C", shape:"flag", color:"red"},  {note:"E", shape:"flag", color:"red"},
+                {note:"F", shape:"flag", color:"blue"}, {note:"B", shape:"flag", color:"blue"} ] },
+    // Center Stage: green star, like Tony's drawing (D and Ab)
+    { id: "centerstage", type: "fixed",
+      points: [ {note:"D", shape:"star"}, {note:"Ab", shape:"star"} ] },
+
+    // Landscape markers, relative to Camp
+    { id: "campfire",    type: "relative",
+      points: [ {semis:0, emoji:"\u26FA"}, {semis:4, emoji:"\u{1F525}"} ] },
+    { id: "middlekey",   type: "relative",
+      points: [ {semis:6, emoji:"\u{1F511}"} ] },
+
+    // Center Stages of the Path (4 & 7) — the spotlight notes that demand resolution.
+    // Each gets a glowing star plus its role, and shows its resolution target.
+    { id: "suspension",  type: "relative",
+      points: [ {semis:5, emoji:"\u{1F31F}"}, {semis:5, emoji:"\u23F8\uFE0F"}, {semis:4, emoji:"\u{1F525}"} ],
+      arrow: { fromSemis: 5, toSemis: 4, color: "#e67e22" } },
+    { id: "leadingtone", type: "relative",
+      points: [ {semis:11, emoji:"\u{1F31F}"}, {semis:11, emoji:"\u{1F3A4}"}, {semis:0, emoji:"\u26FA"} ],
+      arrow: { fromSemis: 11, toSemis: 0, color: "#5b7fd4" } },
+
+    // Characters, relative to Camp
+    { id: "architect",   type: "relative", points: [ {semis:1,  emoji:"\u{1F4D0}"} ] },
+    { id: "author",      type: "relative", points: [ {semis:3,  emoji:"\u270D\uFE0F"} ] },
+    { id: "magician",    type: "relative", points: [ {semis:6,  emoji:"\u{1F3A9}"} ] },
+    { id: "kingqueen",   type: "relative", points: [ {semis:8,  emoji:"\u{1FAC5}"} ] },
+    { id: "traveler",    type: "relative", points: [ {semis:10, emoji:"\u{1F9F3}"} ] }
+  ];
+
   // UI state
   let showingTwo = false; // Start with single octave for reference chart
   let startOnUnit1 = true;
   let showingLabels = false;
   let unitLabelPos = "above"; // "above" | "below" | "hidden"
   let layoutMode = "two-column";
+  let selectedLandmarks = new Set();
+  let showArrows = true; // resolution arrows for Center Stages (4 & 7)
 
   /* =============================
      SVG Generation Functions
@@ -348,6 +513,7 @@
       if (showingLabels) {
         showLabelsForChart(chartDiv, key);
       }
+      addMarkersToChart(chartDiv, key);
     });
   }
 
@@ -395,6 +561,104 @@
         label.setAttribute("class", "note-label");
         label.textContent = text;
         svg.appendChild(label);
+      });
+    }
+  }
+
+  /* =============================
+     Landmark & Character Markers
+     ============================= */
+  function addMarkersToChart(chartDiv, key) {
+    if (selectedLandmarks.size === 0) return;
+    const svg = chartDiv.querySelector('svg');
+    const octaves = layoutMode === "one-column" ? 2 : 1;
+    const inKeySet = new Set((MAJOR[key] || []).map(normalize));
+
+    for (let oct = 1; oct <= octaves; oct++) {
+      const stacks = {}; // markers stack upward when several land on the same key
+      const placed = new Set(); // don't repeat the same marker on the same key (e.g. Camp from two sources)
+
+      const place = (note, p) => {
+        const dedupe = note + "|" + (p.emoji || p.shape);
+        if (placed.has(dedupe)) return;
+        placed.add(dedupe);
+        const x = getXForNote(note, oct);
+        const isBlack = BLACK_KEYS.includes(note);
+        const level = stacks[note] = (stacks[note] || 0) + 1;
+        // White keys: just above the dot. Black keys: above the black-key dot.
+        const baseY = isBlack ? (GEOM.groupY + GEOM.blackH - 40) : (GEOM.groupY + GEOM.whiteH - 52);
+        const y = baseY - (level - 1) * 22;
+
+        if (p.shape === "flag") {
+          // Unit border flag; greyed out when the key is not on the Path
+          const onPath = inKeySet.has(note);
+          const fill = onPath ? TRACK_COLORS[p.color] : "#ffffff";
+          const stroke = onPath ? TRACK_COLORS[p.color] : TRACK_COLORS.grey;
+          const pole = onPath ? "#333333" : TRACK_COLORS.grey;
+          const g = document.createElementNS(SVG_NS, "g");
+          g.setAttribute("transform", `translate(${x - 5}, ${y - 22})`);
+          g.innerHTML =
+            `<line x1="0" y1="0" x2="0" y2="22" stroke="${pole}" stroke-width="1.6"/>` +
+            `<circle cx="0" cy="0" r="1.6" fill="${pole}"/>` +
+            `<path d="M0,2 C5,-1 9,4 14,1 L14,9 C9,12 5,7 0,10 Z" fill="${fill}" stroke="${stroke}" stroke-width="1.2"/>`;
+          svg.appendChild(g);
+          return;
+        }
+
+        if (p.shape === "star") {
+          // Fixed Center Stage: green star, like Tony's drawing
+          const g = document.createElementNS(SVG_NS, "g");
+          g.setAttribute("transform", `translate(${x}, ${y - 8})`);
+          g.innerHTML = `<polygon points="0,-9 2.1,-2.9 8.6,-2.8 3.4,1.1 5.3,7.3 0,3.6 -5.3,7.3 -3.4,1.1 -8.6,-2.8 -2.1,-2.9" fill="#2EAE4F" stroke="#1B7A36" stroke-width="1"/>`;
+          svg.appendChild(g);
+          return;
+        }
+
+        const t = document.createElementNS(SVG_NS, "text");
+        t.setAttribute("x", x);
+        t.setAttribute("y", y);
+        t.setAttribute("class", "landmark-marker");
+        t.textContent = p.emoji;
+        svg.appendChild(t);
+      };
+
+      const drawArrow = (fromNote, toNote, color) => {
+        const x1 = getXForNote(fromNote, oct);
+        const x2 = getXForNote(toNote, oct);
+        if (x1 === x2) return;
+        const y = GEOM.groupY + GEOM.whiteH - 8; // just under the dots, inside the keys
+        const dir = x2 > x1 ? 1 : -1;
+
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", x1);
+        line.setAttribute("y1", y);
+        line.setAttribute("x2", x2 - dir * 8);
+        line.setAttribute("y2", y);
+        line.setAttribute("stroke", color);
+        line.setAttribute("stroke-width", "2.5");
+        svg.appendChild(line);
+
+        const head = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+        head.setAttribute("points", `${x2},${y} ${x2 - dir * 9},${y - 5} ${x2 - dir * 9},${y + 5}`);
+        head.setAttribute("fill", color);
+        svg.appendChild(head);
+      };
+
+      LANDMARK_MARKERS.forEach(m => {
+        if (!selectedLandmarks.has(m.id)) return;
+
+        m.points.forEach(p => {
+          const note = (m.type === "fixed") ? p.note : noteFromCamp(key, p.semis);
+          place(note, p);
+        });
+
+        if (m.arrow && showArrows) {
+          drawArrow(
+            noteFromCamp(key, m.arrow.fromSemis),
+            noteFromCamp(key, m.arrow.toSemis),
+            m.arrow.color
+          );
+        }
       });
     }
   }
@@ -447,6 +711,67 @@
       showingLabels = true;
     }
     generateChart();
+  });
+
+  /* =============================
+     Landmarks dropdown behavior
+     ============================= */
+  const landmarksBtn = document.getElementById("landmarks-btn");
+  const landmarksMenu = document.getElementById("landmarks-menu");
+  const landmarkChecks = Array.from(document.querySelectorAll(".lm-check"));
+  const selectAllCheck = document.getElementById("lm-select-all");
+
+  landmarksBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const opening = landmarksMenu.hidden;
+    if (opening) {
+      // Menu is position:fixed so it isn't clipped by the horizontally-scrolling
+      // controls bar; anchor it to the button each time it opens.
+      const r = landmarksBtn.getBoundingClientRect();
+      landmarksMenu.style.top = (r.bottom + 4) + "px";
+      landmarksMenu.style.left = Math.max(8, Math.min(r.left, window.innerWidth - 290)) + "px";
+    }
+    landmarksMenu.hidden = !opening;
+    landmarksBtn.setAttribute("aria-expanded", String(opening));
+  });
+
+  // Keep the menu open while checking boxes
+  landmarksMenu.addEventListener("click", (e) => e.stopPropagation());
+
+  function closeLandmarksMenu() {
+    landmarksMenu.hidden = true;
+    landmarksBtn.setAttribute("aria-expanded", "false");
+  }
+
+  // Close when clicking anywhere else, or when the button moves out from under the menu
+  document.addEventListener("click", closeLandmarksMenu);
+  document.querySelector(".controls").addEventListener("scroll", closeLandmarksMenu);
+  window.addEventListener("resize", closeLandmarksMenu);
+
+  // Resolution arrows toggle (keeps the 4 & 7 symbols, hides just the arrows)
+  document.getElementById("lm-arrows").addEventListener("change", (e) => {
+    showArrows = e.target.checked;
+    generateChart();
+  });
+
+  function updateLandmarkSelection() {
+    selectedLandmarks = new Set(landmarkChecks.filter(c => c.checked).map(c => c.value));
+
+    selectAllCheck.checked = selectedLandmarks.size === landmarkChecks.length;
+    selectAllCheck.indeterminate = selectedLandmarks.size > 0 && selectedLandmarks.size < landmarkChecks.length;
+
+    landmarksBtn.textContent = selectedLandmarks.size > 0
+      ? `Landmarks & Characters (${selectedLandmarks.size})`
+      : "Landmarks & Characters";
+
+    generateChart();
+  }
+
+  landmarkChecks.forEach(c => c.addEventListener("change", updateLandmarkSelection));
+
+  selectAllCheck.addEventListener("change", () => {
+    landmarkChecks.forEach(c => c.checked = selectAllCheck.checked);
+    updateLandmarkSelection();
   });
 
   /* =============================
