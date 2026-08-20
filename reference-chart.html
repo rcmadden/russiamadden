@@ -30,11 +30,6 @@
   /* =============================
      Chart Layout Styles
      ============================= */
-  /* New track colors — red/blue replaces the old pink/blue.
-     These override helper.css; move them there to apply site-wide. */
-  .dot[data-track="red"]  { fill: #E02424 !important; stroke: #E02424 !important; }
-  .dot[data-track="blue"] { fill: #1E90FF !important; stroke: #1E90FF !important; }
-
   .chart-container {
     padding: 20px;
     background: white;
@@ -622,9 +617,18 @@
         svg.appendChild(t);
       };
 
-      const drawArrow = (fromNote, toNote, color) => {
+      const drawArrow = (fromNote, toNote, color, direction) => {
         const x1 = getXForNote(fromNote, oct);
-        const x2 = getXForNote(toNote, oct);
+        const fromLocalX = getXForNote(fromNote, 1);
+        const toLocalX = getXForNote(toNote, 1);
+        let targetOct = oct;
+
+        // Follow the musical direction across the displayed octave boundary.
+        if (direction > 0 && toLocalX < fromLocalX) targetOct += 1;
+        if (direction < 0 && toLocalX > fromLocalX) targetOct -= 1;
+        if (targetOct < 1 || targetOct > octaves) return;
+
+        const x2 = getXForNote(toNote, targetOct);
         if (x1 === x2) return;
         const y = GEOM.groupY + GEOM.whiteH - 8; // just under the dots, inside the keys
         const dir = x2 > x1 ? 1 : -1;
@@ -653,10 +657,12 @@
         });
 
         if (m.arrow && showArrows) {
+          const direction = ((m.arrow.toSemis - m.arrow.fromSemis + 18) % 12) - 6;
           drawArrow(
             noteFromCamp(key, m.arrow.fromSemis),
             noteFromCamp(key, m.arrow.toSemis),
-            m.arrow.color
+            m.arrow.color,
+            direction
           );
         }
       });
