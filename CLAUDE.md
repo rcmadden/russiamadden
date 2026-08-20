@@ -201,15 +201,17 @@ This project visualizes a music curriculum called **popMATICS** (Tony's framewor
 
 **Fixed landmarks** (same physical keys in every chart, never move with the key):
 - **Borders 🚩** — first & last white key of each Unit (Unit 1: C, E — red; Unit 2: F, B — blue). Rendered as SVG flags, not emoji. Grey/ghost (white fill, grey outline) when the key is not in the current Landscape's Path.
-- **Center Stage ⭐** — center key of each Unit (Unit 1: D; Unit 2: A♭). Rendered as a green star, matching Tony's hand drawings. Only two of these exist — do not confuse with Center Stages of the Path below.
+- **Center Stage ⭐** — center key of each Unit (Unit 1: D; Unit 2: A♭). Rendered as a green star, matching Tony's hand drawings. Only two of these exist.
 
 **Landscape-relative markers** (calculated from whichever key/Camp the chart is currently showing):
 - **Camp ⛺ / Fire 🔥** — scale degrees 1 and 3.
-- **Middle Key 🔑** — the ♭5, tritone from Camp.
-- **Center Stages 🌟 (Path)** — scale degrees 4 and 7, the two tension points that demand resolution. Distinct from the fixed Center Stage landmark above; both use a star but different colors/rendering (🌟 vs the green fixed star) to keep them visually separate.
-  - **Suspension** = degree 4, resolves down to Fire (3).
-  - **Leading Tone** = degree 7, resolves up to Camp (1).
-  - Resolution arrows are optional (toggle: "Show resolution arrows") — turning them off keeps the star + role marker but hides the arrow.
+- **Suspension ⏸️** — degree 4, resolves down to Fire (3).
+- **Leading Tone 🎤** — degree 7, resolves up to Camp (1).
+- Suspension and Leading Tone each render only their own role marker. Camp and Fire are shown only when their separate toggle is selected.
+- Resolution arrows are optional (toggle: "Show resolution arrows") — turning them off keeps the role marker but hides the arrow.
+
+**Off-Landscape marker**:
+- **Middle Key 🔑** — the ♭5, tritone from Camp. By definition, it is not on the Landscape.
 
 **Characters** (chromatic scale degrees, relative to Camp):
 - Architect ♭2, Author ♭3, Magician ♯4, King/Queen ♭6 (one marker — King and Queen are the same piano key, enharmonically ♭6/♯5), Traveler ♭7.
@@ -233,7 +235,7 @@ Landmarks are defined once in the `LANDMARK_MARKERS` array and rendered by `addM
    - `type: "fixed"` points use `{note, emoji}` or `{note, shape}` — same key in every chart.
    - `type: "relative"` points use `{semis, emoji}` or `{semis, shape}` — semitones above Camp, recalculated per key via `noteFromCamp(key, semis)`.
    - Optional `arrow: {fromSemis, toSemis, color}` draws a resolution arrow between two relative points (gated behind the `showArrows` toggle).
-2. Add a matching checkbox in `#landmarks-menu`, grouped under the right `.lm-group` (Fixed Landmarks / On the Landscape / Center Stages / Characters).
+2. Add a matching checkbox in `#landmarks-menu`, grouped under the right `.lm-group` (Fixed Landmarks / On the Landscape / Off the Landscape / Characters).
 3. Musical symbols in labels must be literal Unicode (♭ ♯), not HTML entities — matches the existing `displayName()` convention.
 4. Shapes (`"flag"`, `"star"`) are hand-drawn SVG, not emoji — use this for anything that needs Tony's-drawing-accurate rendering (colors, ghosting) rather than a Unicode glyph.
 

@@ -164,6 +164,12 @@
     padding-top: 8px;
   }
 
+  .lm-center-stage-icon {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 18px;
+  }
+
   .site-logo {
     height: 34px;
     width: auto;
@@ -238,16 +244,21 @@
 
         <div class="lm-group">Fixed Landmarks</div>
         <label class="lm-item"><input type="checkbox" class="lm-check" value="borders"> &#128681; Borders</label>
-        <label class="lm-item"><input type="checkbox" class="lm-check" value="centerstage"> &#11088; Center Stage</label>
+        <label class="lm-item"><input type="checkbox" class="lm-check" value="centerstage">
+          <svg class="lm-center-stage-icon" viewBox="-10 -10 20 20" aria-hidden="true">
+            <polygon points="0,-9 2.1,-2.9 8.6,-2.8 3.4,1.1 5.3,7.3 0,3.6 -5.3,7.3 -3.4,1.1 -8.6,-2.8 -2.1,-2.9" fill="#2EAE4F" stroke="#1B7A36" stroke-width="1"/>
+          </svg>
+          Center Stage
+        </label>
 
         <div class="lm-group">On the Landscape</div>
         <label class="lm-item"><input type="checkbox" class="lm-check" value="campfire"> &#9978; Camp &amp; &#128293; Fire (1 &amp; 3)</label>
-        <label class="lm-item"><input type="checkbox" class="lm-check" value="middlekey"> &#128273; Middle Key (♭5)</label>
-
-        <div class="lm-group">Center Stages &#127775; (4 &amp; 7)</div>
-        <label class="lm-item"><input type="checkbox" class="lm-check" value="suspension"> &#9208;&#65039; Suspension (4) &#8594; &#128293; Fire</label>
-        <label class="lm-item"><input type="checkbox" class="lm-check" value="leadingtone"> &#127908; Leading Tone (7) &#8594; &#9978; Camp</label>
+        <label class="lm-item"><input type="checkbox" class="lm-check" value="suspension"> &#9208;&#65039; Suspension (4)</label>
+        <label class="lm-item"><input type="checkbox" class="lm-check" value="leadingtone"> &#127908; Leading Tone (7)</label>
         <label class="lm-item lm-option"><input type="checkbox" id="lm-arrows" checked> Show resolution arrows</label>
+
+        <div class="lm-group">Off the Landscape</div>
+        <label class="lm-item"><input type="checkbox" class="lm-check" value="middlekey"> &#128273; Middle Key (♭5)</label>
 
         <div class="lm-group">Characters</div>
         <label class="lm-item"><input type="checkbox" class="lm-check" value="architect"> &#128207; Architect (♭2)</label>
@@ -370,16 +381,17 @@
     // Landscape markers, relative to Camp
     { id: "campfire",    type: "relative",
       points: [ {semis:0, emoji:"\u26FA"}, {semis:4, emoji:"\u{1F525}"} ] },
+    // The Middle Key is the tritone opposite Camp, outside the Landscape.
     { id: "middlekey",   type: "relative",
       points: [ {semis:6, emoji:"\u{1F511}"} ] },
 
-    // Center Stages of the Path (4 & 7) — the spotlight notes that demand resolution.
-    // Each gets a glowing star plus its role, and shows its resolution target.
+    // Landscape resolution markers. Each selection adds only its own role marker;
+    // Camp and Fire remain available through the separate campfire toggle.
     { id: "suspension",  type: "relative",
-      points: [ {semis:5, emoji:"\u{1F31F}"}, {semis:5, emoji:"\u23F8\uFE0F"}, {semis:4, emoji:"\u{1F525}"} ],
+      points: [ {semis:5, emoji:"\u23F8\uFE0F"} ],
       arrow: { fromSemis: 5, toSemis: 4, color: "#e67e22" } },
     { id: "leadingtone", type: "relative",
-      points: [ {semis:11, emoji:"\u{1F31F}"}, {semis:11, emoji:"\u{1F3A4}"}, {semis:0, emoji:"\u26FA"} ],
+      points: [ {semis:11, emoji:"\u{1F3A4}"} ],
       arrow: { fromSemis: 11, toSemis: 0, color: "#5b7fd4" } },
 
     // Characters, relative to Camp
@@ -397,7 +409,7 @@
   let unitLabelPos = "above"; // "above" | "below" | "hidden"
   let layoutMode = "two-column";
   let selectedLandmarks = new Set();
-  let showArrows = true; // resolution arrows for Center Stages (4 & 7)
+  let showArrows = true; // optional resolution arrows for Suspension and Leading Tone
 
   /* =============================
      SVG Generation Functions
