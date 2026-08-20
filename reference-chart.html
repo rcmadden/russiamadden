@@ -366,6 +366,7 @@
   const BLACK_KEYS = ["Db","Eb","Gb","Ab","Bb"];
   const SVG_NS = "http://www.w3.org/2000/svg";
   const TRACK_COLORS = { red: "#E02424", blue: "#1E90FF", grey: "#C4C4C4" };
+  const MARKER_STACK_GAP = 28; // clears the full height of border flags at every SVG scale
   const noteFromCamp = (key, semis) => PC_NAMES[(PITCH_CLASS[normalize(key)] + semis) % 12];
 
   const LANDMARK_MARKERS = [
@@ -595,7 +596,7 @@
         const level = stacks[note] = (stacks[note] || 0) + 1;
         // White keys: just above the dot. Black keys: above the black-key dot.
         const baseY = isBlack ? (GEOM.groupY + GEOM.blackH - 40) : (GEOM.groupY + GEOM.whiteH - 52);
-        const y = baseY - (level - 1) * 22;
+        const y = baseY - (level - 1) * MARKER_STACK_GAP;
 
         if (p.shape === "flag") {
           // Unit border flag; greyed out when the key is not on the Path
