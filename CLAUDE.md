@@ -241,6 +241,11 @@ Landmarks are defined once in the `LANDMARK_MARKERS` array and rendered by `addM
 
 Markers dedupe per key (e.g., if Camp is reached via two different selected landmarks, it only renders once) and stack vertically when multiple markers land on the same key.
 
-## Known Gaps / Not Yet Ported to units.html
+## Units Landmark & Character Behavior
 
-The Landmarks & Characters dropdown currently exists only in reference-chart.html. Per the "Consistency" rule above, this should eventually be ported to units.html — flagged here so it isn't lost track of, not yet scheduled.
+The Units page contains the same 11 grouped Landmarks & Characters choices as
+the Reference Chart. In a selected Major Landscape, Camp follows the selected
+key. In Custom Pattern, Camp defaults to C and can be moved independently by
+selecting a white- or black-key surface; dot selection continues to edit only
+the custom Landscape. Markers stack on shared keys, and the resolution-arrow
+toggle controls the Suspension and Leading Tone arrows on both pages.

@@ -1,9 +1,11 @@
 # Release Notes: Red Track/Blue Track Chart Maker
   [← Back to Units](units.html)
 
-## Version 0.0.7 - (August 20, 2026)
+## Version 0.0.7 - (August 22, 2026)
 - **Updated colors** - Replaced the old pink/red track palette with the updated red and blue colors.
-- **Landscape characters and markers** - Added selectable Landscape characters, fixed landmarks, resolution markers, and the off-Landscape Middle Key.
+- **Landmarks and Characters on both tools** - Added the same 11 selectable fixed landmarks, Landscape markers, off-Landscape Middle Key, and Characters to Units and the Reference Chart.
+- **Custom Pattern Camp** - Choose Camp independently from any white or black key while dot taps continue to edit the custom Landscape.
+- **Keyboard and control parity** - Preserved Unit geometry, marker stacking, native control behavior, and optional Suspension and Leading Tone resolution arrows.
 
 ## Version 0.0.6 - (Octorber 19, 2025)
 - **About Red Track/Blue Track** - 

@@ -15,7 +15,7 @@
   }
 
   h1 { margin:0; font-size:22px; font-weight:800; }
-  
+
   .controls {
     display: flex;
     gap: 12px;
@@ -56,10 +56,72 @@
     font-size: 1rem !important;
     line-height: 1.5 !important;
   }
+
+  /* Units Landmarks menu. Fixed positioning keeps it out of the scrolling
+     controls strip; the script anchors it to the button when opened. */
+  .landmarks-dropdown { position: relative; }
+  #landmarks-btn { min-width: 230px; cursor: pointer; }
+  .landmarks-menu {
+    position: fixed;
+    z-index: 2000;
+    background: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(0,0,0,.12);
+    padding: 10px 14px;
+    min-width: 260px;
+    max-width: calc(100vw - 20px);
+    max-height: 60vh;
+    overflow-y: auto;
+    text-align: left;
+  }
+  .lm-group {
+    color: #888;
+    font-size: 12px;
+    letter-spacing: .04em;
+    margin: 10px 0 4px;
+    text-transform: uppercase;
+  }
+  .lm-item {
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    gap: 8px;
+    margin: 0;
+    padding: 4px 0;
+    white-space: nowrap;
+  }
+  .lm-all {
+    border-bottom: 1px solid #eee;
+    font-weight: 600;
+    padding-bottom: 8px;
+  }
+  .lm-option {
+    border-top: 1px dashed #eee;
+    color: #666;
+    font-size: 14px;
+    margin-top: 4px;
+    padding-top: 8px;
+  }
+  .lm-center-stage-icon {
+    flex: 0 0 18px;
+    height: 18px;
+    margin-top: 0;
+    width: 18px;
+  }
   /* =============================
      SVG Styling
      ============================= */
   svg { margin-top:12px; }
+  .key-chart > svg { display:block; height:auto; width:100%; }
+  #keyboard {
+    display:block;
+    height:auto;
+    margin-left:auto;
+    margin-right:auto;
+    max-width:1160px;
+    width:calc(100% - 2rem);
+  }
   text.octave-label { font-size:20px; font-weight:600; fill:#0f172a; text-anchor:middle; }
   text.unit-label   { font-size:18px; font-weight:300; fill:#0f172a; text-anchor:middle;}
   .dot { stroke-width:1; cursor:pointer; }
@@ -67,6 +129,23 @@
   .dot[data-track="blue"] { fill:#1E90FF; stroke:#1E90FF; }
   .hidden { opacity:0; }
   .note-label { font-size:24px; fill:#111; text-anchor:middle; user-select:none; }
+  #keyboard .landmark-marker {
+    dominant-baseline: alphabetic;
+    font-size: 24px;
+    pointer-events: none;
+    text-anchor: middle;
+    user-select: none;
+  }
+  #keyboard .camp-target {
+    cursor: crosshair;
+    fill: transparent;
+  }
+  #keyboard .camp-target:focus-visible {
+    outline: none;
+    stroke: #0d6efd;
+    stroke-dasharray: 4 3;
+    stroke-width: 2;
+  }
 
   @media (max-width: 768px){
     svg { width: 96vw; height:auto; }
@@ -94,7 +173,7 @@
       flex-shrink: 0;
       min-width: max-content;
     }
-  } 
+  }
 
   /* =============================
      Shared Link & Card Styles
@@ -148,4 +227,3 @@
 .img-thumbnail {
   border-color: transparent !important;
 }
-

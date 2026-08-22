@@ -26,17 +26,17 @@
 <meta name="twitter:image" content="https://russiamadden.com/assets/img/units-preview.png" />
 
 </head>
-<body class="main"> 
+<body class="main">
 <header class="bg-white mx-n3 px-3 ">
   <div class="header-row-1 d-flex flex-column align-items-start py-2 gap-1">
     <div class="d-flex justify-content-between w-100">
-      <span class="navbar-brand mb-0 h1">Russia Madden<a href="projects.html" class="text-link text-primary"> > Projects</a></span>
+      <span class="navbar-brand mb-0 h1">Russia Madden<a href="https://russiamadden.com/projects.html" class="text-link text-primary"> > Projects</a></span>
       <a href="reference-chart.html">12 KeyChart</a>
     </div>
     <div class="d-flex justify-content-between w-100">
       <h1>Red Track/Blue Track Chart Maker</h1>
       <span class="mb-0">
-        <a href="about_red_track_blue_track.html" class="text-primary">About</a>
+        <a href="https://russiamadden.com/about_red_track_blue_track.html" class="text-primary">About</a>
       </span>
     </div>
 
@@ -81,7 +81,39 @@
       </select>
     </div>
 
-    <button id="toggle-octaves"  class="btn btn-form-style">Show Two Octaves</button>
+    <div class="dropdown landmarks-dropdown">
+      <button id="landmarks-btn" class="form-select text-start" type="button" aria-haspopup="true" aria-expanded="false">Landmarks &amp; Characters</button>
+      <div id="landmarks-menu" class="landmarks-menu" hidden>
+        <label class="lm-item lm-all"><input type="checkbox" id="lm-select-all"> Select All</label>
+
+        <div class="lm-group">Fixed Landmarks</div>
+        <label class="lm-item"><input type="checkbox" class="lm-check" value="borders"> &#128681; Borders</label>
+        <label class="lm-item"><input type="checkbox" class="lm-check" value="centerstage">
+          <svg class="lm-center-stage-icon" viewBox="-10 -10 20 20" aria-hidden="true">
+            <polygon points="0,-9 2.1,-2.9 8.6,-2.8 3.4,1.1 5.3,7.3 0,3.6 -5.3,7.3 -3.4,1.1 -8.6,-2.8 -2.1,-2.9" fill="#2EAE4F" stroke="#1B7A36" stroke-width="1"/>
+          </svg>
+          Center Stage
+        </label>
+
+        <div class="lm-group">On the Landscape</div>
+        <label class="lm-item"><input type="checkbox" class="lm-check" value="campfire"> &#9978; Camp &amp; &#128293; Fire (1 &amp; 3)</label>
+        <label class="lm-item"><input type="checkbox" class="lm-check" value="suspension"> &#9208;&#65039; Suspension (4)</label>
+        <label class="lm-item"><input type="checkbox" class="lm-check" value="leadingtone"> &#127908; Leading Tone (7)</label>
+        <label class="lm-item lm-option"><input type="checkbox" id="lm-arrows" checked> Show resolution arrows</label>
+
+        <div class="lm-group">Off the Landscape</div>
+        <label class="lm-item"><input type="checkbox" class="lm-check" value="middlekey"> &#128273; Middle Key (&#9837;5)</label>
+
+        <div class="lm-group">Characters</div>
+        <label class="lm-item"><input type="checkbox" class="lm-check" value="architect"> &#128207; Architect (&#9837;2)</label>
+        <label class="lm-item"><input type="checkbox" class="lm-check" value="author"> &#9997;&#65039; Author (&#9837;3)</label>
+        <label class="lm-item"><input type="checkbox" class="lm-check" value="magician"> &#127913; Magician (&#9839;4)</label>
+        <label class="lm-item"><input type="checkbox" class="lm-check" value="kingqueen"> &#129333; King / &#128120; Queen (&#9837;6)</label>
+        <label class="lm-item"><input type="checkbox" class="lm-check" value="traveler"> &#129523; Traveler (&#9837;7)</label>
+      </div>
+    </div>
+
+    <button id="toggle-octaves"  class="btn btn-form-style">Show One Octave</button>
     <button id="toggle-start"    class="btn btn-form-style">Start on Unit 1</button>
     </div>
   </div>
@@ -184,7 +216,7 @@
 </svg>
 <footer class="text-center mt-4 mb-4">
   <div class="mt-4" style="text-align: left; margin-left:1rem;">
-    <a href="releases" class="text-link"><div><small>Version: 0.0.5</small></div></a>
+    <a href="https://russiamadden.com/releases" class="text-link"><div><small>Version: 0.0.7</small></div></a>
   </div>
 </footer>
 <!-- </div> -->
@@ -198,9 +230,13 @@
     groupY: 60,           // translateY for each octave group
     whiteW: 80,
     whiteH: 300,
+    blackW: 50,
     blackH: 180,
+    dotRadius: 18,
     unit1W: 3*80,         // C D E
     unit2W: 4*80,         // F G A B
+    whiteDotY: 270,
+    blackDotY: 150,
 
     // Label offsets relative to key top/bottom
     unitLabelAboveOffset: -6,  // a bit above the key tops
@@ -234,7 +270,7 @@
   const normalize  = toFlat;
   const prefersSharps = key => ["G","D","A","E","B","F#","C#"].includes(key);
   function displayName(norm, preferSharpsFlag){
-    if (!preferSharpsFlag) 
+    if (!preferSharpsFlag)
       return norm.replace('#', '♯').replace('b', '♭');
     const FLAT_TO_SHARP = {"Db":"C#","Eb":"D#","Gb":"F#","Ab":"G#","Bb":"A#"};
     let result = FLAT_TO_SHARP[norm] || norm;
@@ -264,6 +300,47 @@
   };
 
   /* =============================================================================
+     Landmarks & Characters, matching the Reference Chart:
+     - Fixed landmarks live on physical keys and never move.
+     - Landscape markers and Characters are measured in semitones ("Wave
+       steps") above Camp. A selected key supplies Camp automatically; Custom
+       Pattern keeps the established independent key-area Camp interaction so
+       tapping dots continues to change only the Landscape.
+     ============================================================================= */
+  const PITCH_CLASS = {"C":0,"Db":1,"D":2,"Eb":3,"E":4,"F":5,"Gb":6,"G":7,"Ab":8,"A":9,"Bb":10,"B":11};
+  const PC_NAMES = ["C","Db","D","Eb","E","F","Gb","G","Ab","A","Bb","B"];
+  const BLACK_KEYS = ["Db","Eb","Gb","Ab","Bb"];
+  const SVG_NS = "http://www.w3.org/2000/svg";
+  const TRACK_COLORS = { red: "#E02424", blue: "#1E90FF", grey: "#C4C4C4" };
+  const REFERENCE_WHITE_KEY_WIDTH = 50;
+  const MARKER_SCALE = GEOM.whiteW / REFERENCE_WHITE_KEY_WIDTH;
+  const MARKER_STACK_GAP = 28 * MARKER_SCALE;
+  const noteFromCamp = (camp, semis) => PC_NAMES[(PITCH_CLASS[normalize(camp)] + semis) % 12];
+
+  const LANDMARK_MARKERS = [
+    { id: "borders", type: "fixed",
+      points: [ {note:"C", shape:"flag", color:"red"}, {note:"E", shape:"flag", color:"red"},
+                {note:"F", shape:"flag", color:"blue"}, {note:"B", shape:"flag", color:"blue"} ] },
+    { id: "centerstage", type: "fixed",
+      points: [ {note:"D", shape:"star"}, {note:"Ab", shape:"star"} ] },
+    { id: "campfire", type: "relative",
+      points: [ {semis:0, emoji:"\u26FA"}, {semis:4, emoji:"\u{1F525}"} ] },
+    { id: "middlekey", type: "relative",
+      points: [ {semis:6, emoji:"\u{1F511}"} ] },
+    { id: "suspension", type: "relative",
+      points: [ {semis:5, emoji:"\u23F8\uFE0F"} ],
+      arrow: { fromSemis:5, toSemis:4, color:"#e67e22" } },
+    { id: "leadingtone", type: "relative",
+      points: [ {semis:11, emoji:"\u{1F3A4}"} ],
+      arrow: { fromSemis:11, toSemis:0, color:"#5b7fd4" } },
+    { id: "architect", type: "relative", points: [ {semis:1, emoji:"\u{1F4D0}"} ] },
+    { id: "author", type: "relative", points: [ {semis:3, emoji:"\u270D\uFE0F"} ] },
+    { id: "magician", type: "relative", points: [ {semis:6, emoji:"\u{1F3A9}"} ] },
+    { id: "kingqueen", type: "relative", points: [ {semis:8, emoji:"\u{1FAC5}"} ] },
+    { id: "traveler", type: "relative", points: [ {semis:10, emoji:"\u{1F9F3}"} ] }
+  ];
+
+  /* =============================================================================
      Free mode state (no key selected): user toggles notes on/off by clicking dots.
      We mirror across octaves & enharmonics.
      ============================================================================= */
@@ -275,6 +352,9 @@
   let startOnUnit1  = true;
   let showingLabels = false;
   let unitLabelPos  = "above"; // "above" | "below" | "hidden"
+  let customCamp = "C";
+  let selectedLandmarks = new Set();
+  let showArrows = true;
 
   /* =============================
      Dot utilities
@@ -293,12 +373,30 @@
   function applyManualDots(){
     document.querySelectorAll(".dot").forEach(d => d.classList.add("hidden"));
     manualOn.forEach(n => forEachDotOf(n, el => el.classList.remove("hidden")));
+    updateDotAccessibility(true);
   }
 
   function applyScaleDots(){
     document.querySelectorAll(".dot").forEach(d => d.classList.add("hidden"));
     const notes = MAJOR[selectedScale] || [];
     notes.forEach(n => forEachDotOf(n, el => el.classList.remove("hidden")));
+    updateDotAccessibility(false);
+  }
+
+  function updateDotAccessibility(interactive){
+    document.querySelectorAll(".dot").forEach(dot => {
+      if (interactive) {
+        dot.setAttribute("role", "button");
+        dot.setAttribute("tabindex", "0");
+        dot.setAttribute("aria-label", `${dot.getAttribute("data-key")}, ${dot.getAttribute("data-track")} Track`);
+        dot.setAttribute("aria-pressed", String(!dot.classList.contains("hidden")));
+      } else {
+        dot.removeAttribute("role");
+        dot.removeAttribute("tabindex");
+        dot.removeAttribute("aria-label");
+        dot.removeAttribute("aria-pressed");
+      }
+    });
   }
 
   function onDotClick(e){
@@ -307,14 +405,20 @@
     if (manualOn.has(note)) manualOn.delete(note); else manualOn.add(note);
     applyManualDots();
     if (showingLabels) showNoteLabels("Free", Array.from(manualOn), false);
+    renderLandmarks();
   }
 
   // Init dots: tag their octave & attach click handler
   document.querySelectorAll(".dot").forEach(dot => {
-    const oct = dot.closest("[id^='oct']").getAttribute("data-octave") || "1";
+    const oct = dot.closest("[data-octave]").getAttribute("data-octave");
     dot.setAttribute("data-octave", oct);
     dot.classList.add("hidden");
     dot.addEventListener("click", onDotClick);
+    dot.addEventListener("keydown", e => {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      e.preventDefault();
+      onDotClick(e);
+    });
   });
 
   /* =============================
@@ -331,6 +435,7 @@
       const u1 = document.getElementById(`oct${oct}-u1`);
       const u2 = document.getElementById(`oct${oct}-u2`);
       const { left, right } = getUnitLabels(oct);
+      const octaveOffset = (Number(oct) - 1) * (GEOM.unit1W + GEOM.unit2W);
 
       // Swap units horizontally when starting on Unit 2
       if (startOnUnit1){
@@ -338,11 +443,15 @@
         u2.setAttribute("transform",`translate(${GEOM.unit1W},0)`);  // after Unit 1
         if (left)  left.textContent  = "Unit 1";
         if (right) right.textContent = "Unit 2";
+        if (left)  left.setAttribute("x", String(octaveOffset + 120));
+        if (right) right.setAttribute("x", String(octaveOffset + 400));
       } else {
         u2.setAttribute("transform",`translate(0,0)`);
         u1.setAttribute("transform",`translate(${GEOM.unit2W},0)`);  // after Unit 2
         if (left)  left.textContent  = "Unit 2";
         if (right) right.textContent = "Unit 1";
+        if (left)  left.setAttribute("x", String(octaveOffset + 160));
+        if (right) right.setAttribute("x", String(octaveOffset + 440));
       }
 
       // Place/hide the "Unit 1 / Unit 2" texts
@@ -357,24 +466,20 @@
 
     document.getElementById("toggle-start").textContent =
       startOnUnit1 ? "Start on Unit 1" : "Start on Unit 2";
+    updateCampTargets();
   }
 
   // ViewBox tweak for single-octave mobile view (prevents clipping)
   function updateSingleOctaveView(){
     const svg = document.getElementById("keyboard");
     const oct1Title = document.getElementById("oct1-title");
-    const { left:oct1Left, right:oct1Right } = getUnitLabels(1);
 
     if (!showingTwo && window.innerWidth <= 768) {
       svg.setAttribute("viewBox","0 0 600 450");
       oct1Title.setAttribute("x","300");
-      if (oct1Left)  oct1Left.setAttribute("x","140");
-      if (oct1Right) oct1Right.setAttribute("x","420");
     } else {
       svg.setAttribute("viewBox","0 0 1160 450");
       oct1Title.setAttribute("x","280");
-      if (oct1Left)  oct1Left.setAttribute("x","120");
-      if (oct1Right) oct1Right.setAttribute("x","400");
     }
   }
 
@@ -396,6 +501,224 @@
     return groupBase(oct) + unitTx(oct, unit) + (unit===1 ? localCxU1[note] : localCxU2[note]);
   }
 
+  function updateCampTargets(){
+    document.querySelectorAll("#labels-layer .camp-target").forEach(target => {
+      const note = target.getAttribute("data-note");
+      const octave = Number(target.getAttribute("data-octave"));
+      const isCustom = !selectedScale;
+      const isVisibleOctave = showingTwo || octave === 1;
+      const isBlack = BLACK_KEYS.includes(note);
+      const width = isBlack ? GEOM.blackW : GEOM.whiteW;
+      const height = isBlack ? GEOM.blackH : GEOM.whiteH;
+      const x = xFor(note, octave) - width / 2;
+      const rectPath = (left, top, rectWidth, rectHeight) =>
+        `M${left},${top}h${rectWidth}v${rectHeight}h${-rectWidth}Z`;
+      let keyPath;
+      if (isBlack) {
+        keyPath = rectPath(x, GEOM.groupY, width, height);
+      } else {
+        let upperSegments = [[x, x + width]];
+        BLACK_KEYS.forEach(blackNote => {
+          const blackLeft = xFor(blackNote, octave) - GEOM.blackW / 2;
+          const blackRight = blackLeft + GEOM.blackW;
+          upperSegments = upperSegments.flatMap(([left, right]) => {
+            if (blackRight <= left || blackLeft >= right) return [[left, right]];
+            return [[left, Math.max(left, blackLeft)], [Math.min(right, blackRight), right]]
+              .filter(([segmentLeft, segmentRight]) => segmentRight > segmentLeft);
+          });
+        });
+        const upperPath = upperSegments.map(([left, right]) =>
+          rectPath(left, GEOM.groupY, right - left, GEOM.blackH)).join("");
+        const lowerPath = rectPath(x, GEOM.groupY + GEOM.blackH, width, GEOM.whiteH - GEOM.blackH);
+        keyPath = upperPath + lowerPath;
+      }
+      const radius = GEOM.dotRadius;
+      const dotX = xFor(note, octave);
+      const dotY = GEOM.groupY + (isBlack ? GEOM.blackDotY : GEOM.whiteDotY);
+      const dotHole = `M${dotX - radius},${dotY}a${radius},${radius} 0 1,0 ${2 * radius},0a${radius},${radius} 0 1,0 ${-2 * radius},0Z`;
+      const isInteractive = isCustom && isVisibleOctave;
+      target.setAttribute("d", keyPath + dotHole);
+      target.setAttribute("aria-pressed", String(isInteractive && customCamp === note));
+      target.setAttribute("tabindex", isInteractive ? "0" : "-1");
+      target.style.display = isVisibleOctave ? "inline" : "none";
+      target.style.pointerEvents = isInteractive ? "auto" : "none";
+    });
+  }
+
+  function setCustomCamp(target){
+    if (selectedScale) return;
+    customCamp = normalize(target.getAttribute("data-note"));
+    updateCampTargets();
+    renderLandmarks();
+  }
+
+  function createCampTargets(){
+    const layer = document.getElementById("labels-layer");
+    [1, 2].forEach(octave => {
+      const whiteNotes = PC_NAMES.filter(note => !BLACK_KEYS.includes(note));
+      [...whiteNotes, ...BLACK_KEYS].forEach(note => {
+        const target = document.createElementNS(SVG_NS, "path");
+        target.setAttribute("class", "camp-target");
+        target.setAttribute("fill-rule", "evenodd");
+        target.setAttribute("data-note", note);
+        target.setAttribute("data-octave", String(octave));
+        target.setAttribute("role", "button");
+        target.setAttribute("aria-label", `Set ${displayName(note, false)} as Camp`);
+        target.addEventListener("click", () => setCustomCamp(target));
+        target.addEventListener("keydown", event => {
+          if (event.key !== "Enter" && event.key !== " ") return;
+          event.preventDefault();
+          setCustomCamp(target);
+        });
+        layer.appendChild(target);
+      });
+    });
+    updateCampTargets();
+  }
+
+  function renderLandmarks(){
+    document.querySelectorAll("#labels-layer .landmark-marker").forEach(el => el.remove());
+    const camp = selectedScale ? normalize(selectedScale) : customCamp;
+    if (selectedLandmarks.size === 0) return;
+
+    const layer = document.getElementById("labels-layer");
+    const octList = showingTwo ? [1,2] : [1];
+    const pathNotes = new Set(selectedScale
+      ? (MAJOR[selectedScale] || []).map(normalize)
+      : manualOn);
+
+    octList.forEach(oct => {
+      const stacks = {};
+      const placed = new Set();
+
+      const place = (landmark, note, point) => {
+        const dedupe = note + "|" + (point.emoji || point.shape);
+        if (placed.has(dedupe)) return;
+        placed.add(dedupe);
+        const x = xFor(note, oct);
+        const baseY = BLACK_KEYS.includes(note)
+          ? (GEOM.groupY + GEOM.blackDotY - 20 * MARKER_SCALE)
+          : (GEOM.groupY + GEOM.whiteDotY - 22 * MARKER_SCALE);
+        const level = stacks[note] = (stacks[note] || 0) + 1;
+        const y = baseY - (level - 1) * MARKER_STACK_GAP;
+
+        if (point.shape === "flag") {
+          const onPath = pathNotes.has(note);
+          const fill = onPath ? TRACK_COLORS[point.color] : "#ffffff";
+          const stroke = onPath ? TRACK_COLORS[point.color] : TRACK_COLORS.grey;
+          const pole = onPath ? "#333333" : TRACK_COLORS.grey;
+          const group = document.createElementNS(SVG_NS, "g");
+          group.setAttribute("transform", `translate(${x - 5 * MARKER_SCALE}, ${y - 22 * MARKER_SCALE}) scale(${MARKER_SCALE})`);
+          group.setAttribute("class", "landmark-marker");
+          group.setAttribute("data-landmark", landmark.id);
+          group.setAttribute("data-note", note);
+          group.setAttribute("data-octave", String(oct));
+          group.setAttribute("aria-hidden", "true");
+          group.innerHTML =
+            `<line x1="0" y1="0" x2="0" y2="22" stroke="${pole}" stroke-width="1.6"/>` +
+            `<circle cx="0" cy="0" r="1.6" fill="${pole}"/>` +
+            `<path d="M0,2 C5,-1 9,4 14,1 L14,9 C9,12 5,7 0,10 Z" fill="${fill}" stroke="${stroke}" stroke-width="1.2"/>`;
+          layer.appendChild(group);
+          return;
+        }
+
+        if (point.shape === "star") {
+          const group = document.createElementNS(SVG_NS, "g");
+          group.setAttribute("transform", `translate(${x}, ${y - 8 * MARKER_SCALE}) scale(${MARKER_SCALE})`);
+          group.setAttribute("class", "landmark-marker");
+          group.setAttribute("data-landmark", landmark.id);
+          group.setAttribute("data-note", note);
+          group.setAttribute("data-octave", String(oct));
+          group.setAttribute("aria-hidden", "true");
+          group.innerHTML = `<polygon points="0,-9 2.1,-2.9 8.6,-2.8 3.4,1.1 5.3,7.3 0,3.6 -5.3,7.3 -3.4,1.1 -8.6,-2.8 -2.1,-2.9" fill="#2EAE4F" stroke="#1B7A36" stroke-width="1"/>`;
+          layer.appendChild(group);
+          return;
+        }
+
+        const marker = document.createElementNS(SVG_NS, "text");
+        marker.setAttribute("x", String(x));
+        marker.setAttribute("y", String(y));
+        marker.setAttribute("class", "landmark-marker");
+        marker.setAttribute("data-landmark", landmark.id);
+        marker.setAttribute("data-note", note);
+        marker.setAttribute("data-octave", String(oct));
+        marker.setAttribute("aria-hidden", "true");
+        marker.textContent = point.emoji;
+        layer.appendChild(marker);
+      };
+
+      const drawArrow = (landmark, fromNote, toNote, color, direction) => {
+        const x1 = xFor(fromNote, oct);
+        const fromLocalX = xFor(fromNote, 1);
+        const toLocalX = xFor(toNote, 1);
+        let targetOct = oct;
+
+        if (direction > 0 && toLocalX < fromLocalX) targetOct += 1;
+        if (direction < 0 && toLocalX > fromLocalX) targetOct -= 1;
+        const wrapsSingleOctave = !showingTwo && (targetOct < 1 || targetOct > 1);
+        if (!wrapsSingleOctave && (targetOct < 1 || targetOct > 2)) return;
+        if (wrapsSingleOctave) targetOct = oct;
+
+        const x2 = xFor(toNote, targetOct);
+        if (x1 === x2) return;
+        const y = GEOM.groupY + GEOM.whiteH - 8 * MARKER_SCALE;
+        const dir = wrapsSingleOctave ? direction : (x2 > x1 ? 1 : -1);
+
+        const appendLine = (startX, endX) => {
+          const line = document.createElementNS(SVG_NS, "line");
+          line.setAttribute("x1", String(startX));
+          line.setAttribute("y1", String(y));
+          line.setAttribute("x2", String(endX));
+          line.setAttribute("y2", String(y));
+          line.setAttribute("stroke", color);
+          line.setAttribute("stroke-width", String(2.5 * MARKER_SCALE));
+          line.setAttribute("class", "landmark-marker");
+          line.setAttribute("data-landmark", landmark.id);
+          line.setAttribute("aria-hidden", "true");
+          layer.appendChild(line);
+        };
+
+        if (wrapsSingleOctave) {
+          const octaveStart = groupBase(oct);
+          const octaveEnd = octaveStart + GEOM.unit1W + GEOM.unit2W;
+          appendLine(x1, direction > 0 ? octaveEnd : octaveStart);
+          appendLine(direction > 0 ? octaveStart : octaveEnd, x2 - dir * 8 * MARKER_SCALE);
+        } else {
+          appendLine(x1, x2 - dir * 8 * MARKER_SCALE);
+        }
+
+        const head = document.createElementNS(SVG_NS, "polygon");
+        head.setAttribute("points", `${x2},${y} ${x2 - dir * 9 * MARKER_SCALE},${y - 5 * MARKER_SCALE} ${x2 - dir * 9 * MARKER_SCALE},${y + 5 * MARKER_SCALE}`);
+        head.setAttribute("fill", color);
+        head.setAttribute("class", "landmark-marker");
+        head.setAttribute("data-landmark", landmark.id);
+        head.setAttribute("aria-hidden", "true");
+        layer.appendChild(head);
+      };
+
+      LANDMARK_MARKERS.forEach(landmark => {
+        if (!selectedLandmarks.has(landmark.id)) return;
+        if (landmark.type === "relative" && !camp) return;
+
+        landmark.points.forEach(point => {
+          const note = landmark.type === "fixed" ? point.note : noteFromCamp(camp, point.semis);
+          place(landmark, note, point);
+        });
+
+        if (landmark.arrow && showArrows) {
+          const direction = ((landmark.arrow.toSemis - landmark.arrow.fromSemis + 18) % 12) - 6;
+          drawArrow(
+            landmark,
+            noteFromCamp(camp, landmark.arrow.fromSemis),
+            noteFromCamp(camp, landmark.arrow.toSemis),
+            landmark.arrow.color,
+            direction
+          );
+        }
+      });
+    });
+  }
+
   function clearNoteLabels(){
     document.querySelectorAll("#labels-layer .note-label").forEach(el=>el.remove());
   }
@@ -415,9 +738,10 @@
       : Y.labelBelowDefault;
 
     const octList = showingTwo ? [1,2] : [1];
+    const physicalNotes = Array.from(new Set(notes.map(normalize)));
 
     octList.forEach(oct=>{
-      notes.forEach(nRaw=>{
+      physicalNotes.forEach(nRaw=>{
         const n = normalize(nRaw);
         const text = (mode==="letters") ? displayName(n, preferSharpsFlag) : degNames[n];
         if (!text) return;
@@ -443,6 +767,7 @@
       const notes = s ? MAJOR[s] : Array.from(manualOn);
       showNoteLabels(s || "Free", notes, s ? prefersSharps(s) : false);
     }
+    renderLandmarks();
   });
 
   document.getElementById("unit-label-pos").addEventListener("change", (e)=>{
@@ -472,6 +797,7 @@
       const notes = s ? MAJOR[s] : Array.from(manualOn);
       showNoteLabels(s || "Free", notes, s ? prefersSharps(s) : false);
     }
+    renderLandmarks();
   });
 
 
@@ -490,14 +816,69 @@
 
   document.getElementById("scale-select").addEventListener("change", e=>{
     selectedScale = e.target.value;
+    updateCampTargets();
     document.querySelectorAll(".dot").forEach(d => d.classList.add("hidden"));
     if (!selectedScale) {
       applyManualDots();
       if (showingLabels) showNoteLabels("Free", Array.from(manualOn), false);
+      renderLandmarks();
       return;
     }
     applyScaleDots();
     if (showingLabels) showNoteLabels(selectedScale, MAJOR[selectedScale], prefersSharps(selectedScale));
+    renderLandmarks();
+  });
+
+  /* =============================
+     Landmarks dropdown behavior
+     ============================= */
+  const landmarksBtn = document.getElementById("landmarks-btn");
+  const landmarksMenu = document.getElementById("landmarks-menu");
+  const landmarkChecks = Array.from(document.querySelectorAll(".lm-check"));
+  const selectAllCheck = document.getElementById("lm-select-all");
+
+  landmarksBtn.addEventListener("click", e => {
+    e.stopPropagation();
+    const opening = landmarksMenu.hidden;
+    if (opening) {
+      const r = landmarksBtn.getBoundingClientRect();
+      landmarksMenu.style.top = (r.bottom + 4) + "px";
+      landmarksMenu.style.left = Math.max(8, Math.min(r.left, window.innerWidth - 290)) + "px";
+    }
+    landmarksMenu.hidden = !opening;
+    landmarksBtn.setAttribute("aria-expanded", String(opening));
+  });
+
+  landmarksMenu.addEventListener("click", e => e.stopPropagation());
+
+  function closeLandmarksMenu(){
+    landmarksMenu.hidden = true;
+    landmarksBtn.setAttribute("aria-expanded", "false");
+  }
+
+  document.addEventListener("click", closeLandmarksMenu);
+  document.querySelector(".controls").addEventListener("scroll", closeLandmarksMenu);
+  window.addEventListener("resize", closeLandmarksMenu);
+
+  document.getElementById("lm-arrows").addEventListener("change", e => {
+    showArrows = e.target.checked;
+    renderLandmarks();
+  });
+
+  function updateLandmarkSelection(){
+    selectedLandmarks = new Set(landmarkChecks.filter(c => c.checked).map(c => c.value));
+    selectAllCheck.checked = selectedLandmarks.size === landmarkChecks.length;
+    selectAllCheck.indeterminate = selectedLandmarks.size > 0 && selectedLandmarks.size < landmarkChecks.length;
+    landmarksBtn.textContent = selectedLandmarks.size > 0
+      ? `Landmarks & Characters (${selectedLandmarks.size})`
+      : "Landmarks & Characters";
+    renderLandmarks();
+  }
+
+  landmarkChecks.forEach(c => c.addEventListener("change", updateLandmarkSelection));
+  selectAllCheck.addEventListener("change", () => {
+    landmarkChecks.forEach(c => c.checked = selectAllCheck.checked);
+    updateLandmarkSelection();
   });
 
   /* =============================
@@ -530,6 +911,7 @@
      ============================= */
   applyStartLayout();
   updateSingleOctaveView();
+  createCampTargets();
   window.addEventListener("resize", updateSingleOctaveView);
 
   // Default FREE-MODE starter: red track (C D E F# G# A#)

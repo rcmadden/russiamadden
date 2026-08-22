@@ -438,8 +438,10 @@
       const unit1Label = startOnUnit1 ? "Unit 1" : "Unit 2";
       const unit2Label = startOnUnit1 ? "Unit 2" : "Unit 1";
 
-      svg += `<text class="unit-label" x="${75 + octaveOffset}" y="${unitY}" style="display:${unitDisplay}">${unit1Label}</text>`;
-      svg += `<text class="unit-label" x="${250 + octaveOffset}" y="${unitY}" style="display:${unitDisplay}">${unit2Label}</text>`;
+      const leftUnitCenter = startOnUnit1 ? 75 : 100;
+      const rightUnitCenter = startOnUnit1 ? 250 : 275;
+      svg += `<text class="unit-label" x="${leftUnitCenter + octaveOffset}" y="${unitY}" style="display:${unitDisplay}">${unit1Label}</text>`;
+      svg += `<text class="unit-label" x="${rightUnitCenter + octaveOffset}" y="${unitY}" style="display:${unitDisplay}">${unit2Label}</text>`;
 
       // Generate units
       svg += generateUnit(oct, 1, octaveOffset);
@@ -554,11 +556,12 @@
     });
 
     const baseline = Y.labelBelowDefault;
+    const physicalNotes = Array.from(new Set(notes.map(normalize)));
 
     const octaves = layoutMode === "one-column" ? 2 : 1;
 
     for (let oct = 1; oct <= octaves; oct++) {
-      notes.forEach(nRaw => {
+      physicalNotes.forEach(nRaw => {
         const n = normalize(nRaw);
         const text = (mode === "letters") ? displayName(n, preferSharpsFlag) : degNames[n];
         if (!text) return;
