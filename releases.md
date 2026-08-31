@@ -1,6 +1,11 @@
 # Release Notes: Red Track/Blue Track Chart Maker
   [← Back to Units](units.html)
 
+## Version 0.0.8 - (August 31, 2026)
+- **Mobile Landmarks and Characters menu** - Fixed mobile browser clipping so the complete menu remains visible, reachable, and tappable on Units and the Reference Chart.
+- **Keyboard and focus behavior** - Added predictable initial focus, Escape dismissal, focus restoration, and keyboard navigation at the menu boundaries.
+- **Regression protection** - Added browser checks for menu visibility and interaction across desktop Chromium, mobile Chromium, mobile WebKit, and tablet WebKit.
+
 ## Version 0.0.7 - (August 22, 2026)
 - **Updated colors** - Replaced the old pink/red track palette with the updated red and blue colors.
 - **Landmarks and Characters on both tools** - Added the same 11 selectable fixed landmarks, Landscape markers, off-Landscape Middle Key, and Characters to Units and the Reference Chart.

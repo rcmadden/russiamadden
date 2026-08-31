@@ -216,7 +216,7 @@
 </svg>
 <footer class="text-center mt-4 mb-4">
   <div class="mt-4" style="text-align: left; margin-left:1rem;">
-    <a href="https://russiamadden.com/releases" class="text-link"><div><small>Version: 0.0.7</small></div></a>
+    <a href="https://russiamadden.com/releases" class="text-link"><div><small>Version: 0.0.8</small></div></a>
   </div>
 </footer>
 <!-- </div> -->
@@ -836,6 +836,19 @@
   const landmarksMenu = document.getElementById("landmarks-menu");
   const landmarkChecks = Array.from(document.querySelectorAll(".lm-check"));
   const selectAllCheck = document.getElementById("lm-select-all");
+  const landmarksMenuHome = landmarksMenu.parentElement;
+  const mobileLandmarksMenu = window.matchMedia(
+    "(max-width: 768px), (hover: none), (pointer: coarse)"
+  );
+
+  function updateLandmarksMenuPortal() {
+    // Mobile browsers can clip a fixed descendant to the overflowing controls
+    // strip. Portal only there; preserve the established desktop DOM behavior.
+    const target = mobileLandmarksMenu.matches ? document.body : landmarksMenuHome;
+    if (landmarksMenu.parentElement !== target) target.appendChild(landmarksMenu);
+  }
+
+  updateLandmarksMenuPortal();
 
   landmarksBtn.addEventListener("click", e => {
     e.stopPropagation();
@@ -847,18 +860,40 @@
     }
     landmarksMenu.hidden = !opening;
     landmarksBtn.setAttribute("aria-expanded", String(opening));
+    if (opening) selectAllCheck.focus();
   });
 
   landmarksMenu.addEventListener("click", e => e.stopPropagation());
 
-  function closeLandmarksMenu(){
+  landmarksMenu.addEventListener("keydown", e => {
+    const menuInputs = Array.from(landmarksMenu.querySelectorAll("input"));
+    if (e.key === "Escape") {
+      e.preventDefault();
+      closeLandmarksMenu({ restoreFocus: true });
+    } else if (e.key === "Tab" && e.shiftKey && e.target === menuInputs[0]) {
+      e.preventDefault();
+      closeLandmarksMenu();
+      landmarksBtn.focus();
+    } else if (e.key === "Tab" && !e.shiftKey && e.target === menuInputs.at(-1)) {
+      e.preventDefault();
+      closeLandmarksMenu();
+      document.getElementById("toggle-octaves").focus();
+    }
+  });
+
+  function closeLandmarksMenu({ restoreFocus = false } = {}){
+    const focusWasInMenu = landmarksMenu.contains(document.activeElement);
     landmarksMenu.hidden = true;
     landmarksBtn.setAttribute("aria-expanded", "false");
+    if (restoreFocus || focusWasInMenu) landmarksBtn.focus({ preventScroll: true });
   }
 
   document.addEventListener("click", closeLandmarksMenu);
   document.querySelector(".controls").addEventListener("scroll", closeLandmarksMenu);
-  window.addEventListener("resize", closeLandmarksMenu);
+  window.addEventListener("resize", () => {
+    closeLandmarksMenu();
+    updateLandmarksMenuPortal();
+  });
 
   document.getElementById("lm-arrows").addEventListener("change", e => {
     showArrows = e.target.checked;
